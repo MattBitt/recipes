@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
 from app import app, db, lm, oid
-from forms import LoginForm, EditForm, PostForm, AddRecipeForm
+from forms import LoginForm, RecipeForm
 from models import User, ROLE_USER, ROLE_ADMIN, Recipe
 from datetime import datetime
 from config import RECIPES_PER_PAGE
@@ -92,21 +92,19 @@ def user(nickname, page = 1):
         user = user,
         posts = posts)
 
-@app.route('/edit', methods = ['GET', 'POST'])
+#@app.route('/edit_recipe/', methods = ['GET', 'POST'])
+@app.route('/edit_recipe/<id>', methods = ['GET', 'POST'])
 @login_required
-def edit():
-    form = EditForm(g.user.nickname)
+def edit_recipe(id=1):
+    recipe = Recipe.query.filter_by(id = id).first()
+    form = RecipeForm(obj = recipe)
     if form.validate_on_submit():
-        g.user.nickname = form.nickname.data
-        g.user.about_me = form.about_me.data
-        db.session.add(g.user)
+        form.populate_obj(recipe)
+        db.session.add(recipe)
         db.session.commit()
         flash('Your changes have been saved.')
-        return redirect(url_for('edit'))
-    elif request.method != "POST":
-        form.nickname.data = g.user.nickname
-        form.about_me.data = g.user.about_me
-    return render_template('edit.html',
+        return redirect(url_for('edit_recipe', id=id))
+    return render_template('edit_recipe.html',
         form = form)
 
 
@@ -130,7 +128,7 @@ def delete(id):
 @app.route('/add_recipe/<source>',methods = ['GET', 'POST']) 
 @login_required
 def add_recipe(source = None):
-    form = AddRecipeForm(request.form)
+    form = RecipeForm(request.form)
     print request.method
     if request.method == "POST":
         if form.validate_on_submit():
@@ -151,7 +149,6 @@ def add_recipe(source = None):
         else:
             return render_template('add_recipe.html',form = form)
     elif request.method != "POST":
-        #form.recipe_name.data = g.user.nickname
         return render_template('add_recipe.html',form = form)
     return redirect(url_for('add_recipe'))
 

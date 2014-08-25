@@ -2,6 +2,8 @@
 
 {% block content %}
 {% include 'flash.html' %}
+<a href="{{url_for('edit_recipe',id=recipe['id'])}}">Edit Recipe</a>
+
 <h1>{{ recipe['id'] }} - {{ recipe['recipe_name'] }}</h1>
 Ingredients
 <ul>
