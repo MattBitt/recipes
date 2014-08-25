@@ -64,7 +64,7 @@ class Recipe(db.Model):
     rating = db.Column(db.Integer)
     
     def __repr__(self):
-        return '<Recipe %r - %r>' % (self.recipe.id, self.recipe_name)    
+        return '<Recipe %r - %r>' % (self.id, self.recipe_name)    
 
 #class Tag(db.Model):
     #id = db.Column(db.Integer, primary_key=True)

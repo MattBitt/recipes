@@ -1,6 +1,6 @@
 {% block content %}
 <h1>{{ recipe['id'] }} - {{ recipe['recipe_name'] }}</h1>
-Ingredients
+<p>Ingredients</p>
 <ul>
 {% for ingredient in recipe.ingredient_list %}
      {% if ingredient.strip() %}
@@ -9,13 +9,13 @@ Ingredients
 {% endfor %}
 </ul>
 Directions
-<ul>
+<ol>
 {% for direction in recipe.direction_list %}
     {% if direction.strip() %}
     <li> {{ direction }}  </li>
     {% endif %}
 {% endfor %}
-</ul>
+</ol>
 {% if recipe.note_list %}
 Notes
 <ul>

@@ -92,6 +92,28 @@ def user(nickname, page = 1):
         user = user,
         posts = posts)
 
+
+@app.route('/add_recipe',methods = ['GET', 'POST']) 
+@app.route('/add_recipe/<source>',methods = ['GET', 'POST']) 
+@login_required
+def add_recipe(source = None):
+    form = RecipeForm(request.form)
+
+    print request.method
+    if request.method == "POST":
+        recipe = Recipe()
+        if form.validate_on_submit():
+            form.populate_obj(recipe)
+            db.session.add(recipe)
+            db.session.commit()
+            flash('Your changes have been saved.')
+            return redirect(url_for('add_recipe'))
+        else:
+            return render_template('add_recipe.html',form = form)
+    elif request.method != "POST":
+        return render_template('add_recipe.html',form = form)
+    return redirect(url_for('add_recipe'))
+
 @app.route('/edit_recipe/<id>', methods = ['GET', 'POST'])
 @login_required
 def edit_recipe(id=1):
@@ -109,48 +131,6 @@ def edit_recipe(id=1):
     return render_template('edit_recipe.html',
         form = form)
 
-
-@app.route('/delete_recipe/<int:id>')
-@login_required
-def delete_recipe(id):
-    recipe = Recipe.query.filter_by(id = id).first()
-    if recipe == None:
-        flash('Recipe not found.')
-        return redirect(url_for('index'))
-    db.session.delete(recipe)
-    db.session.commit()
-    flash('The recipe has been deleted.')
-    return redirect(url_for('index'))
-
-    
-@app.route('/add_recipe',methods = ['GET', 'POST']) 
-@app.route('/add_recipe/<source>',methods = ['GET', 'POST']) 
-@login_required
-def add_recipe(source = None):
-    form = RecipeForm(request.form)
-    print request.method
-    if request.method == "POST":
-        if form.validate_on_submit():
-            recipe = Recipe(recipe_name=form.recipe_name.data, 
-                directions=form.directions.data,
-                ingredients=form.ingredients.data,
-                notes = form.notes.data,
-                url = form.url.data,
-                user_id = g.user.nickname,
-                image_path = form.image_path.data,
-                rating = form.rating.data,
-                timestamp = datetime.now(),
-                was_cooked = form.was_cooked.data)
-            db.session.add(recipe)
-            db.session.commit()
-            flash('Your changes have been saved.')
-            return redirect(url_for('add_recipe'))
-        else:
-            return render_template('add_recipe.html',form = form)
-    elif request.method != "POST":
-        return render_template('add_recipe.html',form = form)
-    return redirect(url_for('add_recipe'))
-
 @app.route('/view_recipe/<id>',methods = ['GET', 'POST']) 
 @login_required
 def view_recipe(id):
@@ -167,6 +147,18 @@ def view_recipe(id):
             recipe.note_list = recipe.notes.split('\n')
     return render_template('view_recipe.html',
         recipe = recipe)
+
+@app.route('/delete_recipe/<int:id>')
+@login_required
+def delete_recipe(id):
+    recipe = Recipe.query.filter_by(id = id).first()
+    if recipe == None:
+        flash('Recipe not found.')
+        return redirect(url_for('index'))
+    db.session.delete(recipe)
+    db.session.commit()
+    flash('The recipe has been deleted.')
+    return redirect(url_for('index'))
 
 @app.route('/print_recipe/<id>',methods = ['GET', 'POST']) 
 @login_required
