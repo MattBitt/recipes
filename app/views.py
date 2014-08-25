@@ -179,9 +179,21 @@ def add_recipe(source = None):
             return render_template('add_recipe.html',form = form)
     elif request.method != "POST":
         #form.recipe_name.data = g.user.nickname
-        print "Second condition"
         return render_template('add_recipe.html',form = form)
-    
-    print "Final"
     return redirect(url_for('add_recipe'))
+
+@app.route('/view_recipe/<id>',methods = ['GET', 'POST']) 
+@login_required
+def view_recipe(id):
+    recipe = Recipe.query.filter_by(id = id).first()
+    if recipe == None:
+        flash('Recipe ' + recipe['id'] + ' not found.')
+        return redirect(url_for('index'))
+    else:
+        print recipe.ingredients
+        ingreds = recipe.ingredients.split()
+    return render_template('view_recipe.html',
+        recipe = recipe,
+        ingreds = ingreds)
+        
     
