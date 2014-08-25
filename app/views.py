@@ -92,12 +92,14 @@ def user(nickname, page = 1):
         user = user,
         posts = posts)
 
-#@app.route('/edit_recipe/', methods = ['GET', 'POST'])
 @app.route('/edit_recipe/<id>', methods = ['GET', 'POST'])
 @login_required
 def edit_recipe(id=1):
     recipe = Recipe.query.filter_by(id = id).first()
     form = RecipeForm(obj = recipe)
+    if recipe == None:
+        flash('Recipe not found.')
+        return redirect(url_for('index'))
     if form.validate_on_submit():
         form.populate_obj(recipe)
         db.session.add(recipe)
@@ -108,19 +110,16 @@ def edit_recipe(id=1):
         form = form)
 
 
-@app.route('/delete/<int:id>')
+@app.route('/delete_recipe/<int:id>')
 @login_required
-def delete(id):
-    post = Post.query.get(id)
-    if post == None:
-        flash('Post not found.')
+def delete_recipe(id):
+    recipe = Recipe.query.filter_by(id = id).first()
+    if recipe == None:
+        flash('Recipe not found.')
         return redirect(url_for('index'))
-    if post.author.id != g.user.id:
-        flash('You cannot delete this post.')
-        return redirect(url_for('index'))
-    db.session.delete(post)
+    db.session.delete(recipe)
     db.session.commit()
-    flash('Your post has been deleted.')
+    flash('The recipe has been deleted.')
     return redirect(url_for('index'))
 
     
@@ -167,6 +166,23 @@ def view_recipe(id):
         if recipe.notes != None:
             recipe.note_list = recipe.notes.split('\n')
     return render_template('view_recipe.html',
+        recipe = recipe)
+
+@app.route('/print_recipe/<id>',methods = ['GET', 'POST']) 
+@login_required
+def print_recipe(id):
+    recipe = Recipe.query.filter_by(id = id).first()
+    if recipe == None:
+        flash('Recipe ' + recipe['id'] + ' not found.')
+        return redirect(url_for('index'))
+    else:
+        if recipe.ingredients != None:
+            recipe.ingredient_list = recipe.ingredients.split('\n')
+        if recipe.directions != None:
+            recipe.direction_list = recipe.directions.split('\n')
+        if recipe.notes != None:
+            recipe.note_list = recipe.notes.split('\n')
+    return render_template('print_recipe.html',
         recipe = recipe)
         
     

@@ -2,34 +2,11 @@
 
 {% block content %}
 {% include 'flash.html' %}
-<a href="{{url_for('edit_recipe',id=recipe['id'])}}">Edit Recipe</a>
+<a href="{{url_for('edit_recipe',id=recipe['id'])}}">Edit</a>
+<a href="{{url_for('print_recipe',id=recipe['id'])}}">Print</a>
 
-<h1>{{ recipe['id'] }} - {{ recipe['recipe_name'] }}</h1>
-Ingredients
-<ul>
-{% for ingredient in recipe.ingredient_list %}
-     {% if ingredient.strip() %}
-    <li> {{ ingredient }}  </li>
-    {% endif %}
-{% endfor %}
-</ul>
-Directions
-<ul>
-{% for direction in recipe.direction_list %}
-    {% if direction.strip() %}
-    <li> {{ direction }}  </li>
-    {% endif %}
-{% endfor %}
-</ul>
-{% if recipe.note_list %}
-Notes
-<ul>
-{% for note in recipe.note_list %}
-    {% if note.strip() %}
-    <li> {{ note }}  </li>
-    {% endif %}
-{% endfor %}
-</ul>
-{% endif %}
+{% include 'recipe.html' %}
+
+<a href="{{url_for('delete_recipe',id=recipe['id'])}}">Delete</a> (This cannot be undone)
 
 {% endblock %}
