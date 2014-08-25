@@ -4,19 +4,19 @@
 {% block content %}
 <h1>Our Family Recipes</h1>
 {% include 'flash.html' %}
-{% for recipe in recipes %}
-    <p> <a href="{{url_for('view_recipe', id = recipe['id']) }}" > {{ recipe["recipe_name"] }}  </p>
+{% for recipe in recipes.items %}
+    <p> <a href="{{url_for('view_recipe', id = recipe['id']) }}" > {{ recipe["recipe_name"] }}  </a></p>
 {% endfor %}
 <ul class="pager">
     {% if recipes.has_prev %}
-    <li class="previous"><a href="{{ url_for('index', page = recipes.prev_num) }}">Newer Recipes</a></li>
+    <li class="previous"><a href="{{ url_for('index', page = recipes.prev_num) }}">Previous page</a></li>
     {% else %}
-    <li class="previous disabled"><a href="#">Newer Recipes</a></li>
+    <li class="previous disabled"><a href="#">Previous page</a></li>
     {% endif %}
     {% if recipes.has_next %}
-    <li class="next"><a href="{{ url_for('index', page = recipes.next_num) }}">Older Recipes</a></li>
+    <li class="next"><a href="{{ url_for('index', page = recipes.next_num) }}">Next page</a></li>
     {% else %}
-    <li class="next disabled"><a href="#">Older Recipes</a></li>
+    <li class="next disabled"><a href="#">Next page</a></li>
     {% endif %}
 </ul>
 {% endblock %}

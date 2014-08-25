@@ -13,4 +13,4 @@ OPENID_PROVIDERS = [
 
 # administrator list
 
-POSTS_PER_PAGE = 3
+RECIPES_PER_PAGE = 5

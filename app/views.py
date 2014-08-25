@@ -1,10 +1,11 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
+
 from app import app, db, lm, oid
 from forms import LoginForm, EditForm, PostForm, AddRecipeForm
 from models import User, ROLE_USER, ROLE_ADMIN, Recipe
 from datetime import datetime
-from config import POSTS_PER_PAGE
+from config import RECIPES_PER_PAGE
 
 @lm.user_loader
 def load_user(id):
@@ -33,7 +34,7 @@ def internal_error(error):
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 @login_required
 def index(page = 1):
-    recipes = Recipe.query.all()
+    recipes = Recipe.query.paginate(page, RECIPES_PER_PAGE, False)
     flash('Loading Recipes')
     return render_template('index.html',
         title = 'Home',
@@ -66,7 +67,6 @@ def after_login(resp):
         user = User(nickname = nickname, email = resp.email, role = ROLE_USER)
         db.session.add(user)
         db.session.commit()
-        # make the user follow him/herself
         db.session.commit()
     remember_me = False
     if 'remember_me' in session:
@@ -88,7 +88,6 @@ def user(nickname, page = 1):
     if user == None:
         flash('User ' + nickname + ' not found.')
         return redirect(url_for('index'))
-    posts = user.posts.paginate(page, POSTS_PER_PAGE, False)
     return render_template('user.html',
         user = user,
         posts = posts)
