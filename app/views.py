@@ -33,33 +33,7 @@ def internal_error(error):
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 @login_required
 def index(page = 1):
-    recipes = [
-        { 
-            'recipe_name': 'Tacos', 
-            'url' : 'www.food.com',
-            'was_cooked' : 0,
-            'rating' : 11
-        },
-        { 
-            'recipe_name': 'Burritos', 
-            'url' : 'www.foodnetwork.com',
-            'was_cooked' : 1,
-            'rating' : 9
-        },
-        { 
-            'recipe_name': 'Boudin', 
-            'url' : 'www.foodnetwork.com',
-            'was_cooked' : 1,
-            'rating' : 9
-        },
-        { 
-            'recipe_name': 'Catfish', 
-            'url' : 'www.foodnetwork.com',
-            'was_cooked' : 1,
-            'rating' : 9
-        }
-    ]
-    
+    recipes = Recipe.query.all()
     flash('Loading Recipes')
     return render_template('index.html',
         title = 'Home',
@@ -190,10 +164,13 @@ def view_recipe(id):
         flash('Recipe ' + recipe['id'] + ' not found.')
         return redirect(url_for('index'))
     else:
-        print recipe.ingredients
-        ingreds = recipe.ingredients.split()
+        if recipe.ingredients != None:
+            recipe.ingredient_list = recipe.ingredients.split('\n')
+        if recipe.directions != None:
+            recipe.direction_list = recipe.directions.split('\n')
+        if recipe.notes != None:
+            recipe.note_list = recipe.notes.split('\n')
     return render_template('view_recipe.html',
-        recipe = recipe,
-        ingreds = ingreds)
+        recipe = recipe)
         
     
