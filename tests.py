@@ -31,11 +31,6 @@ class TestCase(unittest.TestCase):
         nickname2 = User.make_unique_nickname('john')
         assert nickname2 != 'john'
         assert nickname2 != nickname
-        
-    
-    
-        
-        
-        
+      
 if __name__ == '__main__':
     unittest.main()

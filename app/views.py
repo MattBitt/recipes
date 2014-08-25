@@ -157,27 +157,31 @@ def delete(id):
 @app.route('/add_recipe/<source>',methods = ['GET', 'POST']) 
 @login_required
 def add_recipe(source = None):
-    form = AddRecipeForm()
-    if form.validate_on_submit():
-        recipe = Recipe(recipe_name=form.recipe_name.data, 
-            directions=form.directions.data,
-            ingredients=form.ingredients.data,
-            notes = form.notes.data,
-            url = form.url.data,
-            user_id = g.user.nickname,
-            image_path = form.image_path.data,
-            rating = form.rating.data,
-            timestamp = datetime.now(),
-            was_cooked = form.was_cooked.data)
-            
-        flash("Recipe" + recipe)   
-        db.session.add(recipe)
-        db.session.commit()
-        flash('Your changes have been saved.')
-        return redirect(url_for('add_recipe'))
+    form = AddRecipeForm(request.form)
+    print request.method
+    if request.method == "POST":
+        if form.validate_on_submit():
+            recipe = Recipe(recipe_name=form.recipe_name.data, 
+                directions=form.directions.data,
+                ingredients=form.ingredients.data,
+                notes = form.notes.data,
+                url = form.url.data,
+                user_id = g.user.nickname,
+                image_path = form.image_path.data,
+                rating = form.rating.data,
+                timestamp = datetime.now(),
+                was_cooked = form.was_cooked.data)
+            db.session.add(recipe)
+            db.session.commit()
+            flash('Your changes have been saved.')
+            return redirect(url_for('add_recipe'))
+        else:
+            return render_template('add_recipe.html',form = form)
     elif request.method != "POST":
         #form.recipe_name.data = g.user.nickname
-        flash('Form not validated')
+        print "Second condition"
         return render_template('add_recipe.html',form = form)
+    
+    print "Final"
     return redirect(url_for('add_recipe'))
     

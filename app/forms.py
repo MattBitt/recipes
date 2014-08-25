@@ -34,7 +34,7 @@ class AddRecipeForm(Form):
     directions = TextAreaField('directions', validators = [Length(min = 0, max = 140)])
     ingredients = TextAreaField('ingredients', validators = [Length(min = 0, max = 140)])
     notes = TextAreaField('notes', validators = [Length(min = 0, max = 140)])
-    url = TextField('recipe_name')
+    url = TextField('recipe_url')
     image_path = TextField('recipe_name')
     was_cooked = BooleanField('was_cooked')
     rating = IntegerField('rating')
