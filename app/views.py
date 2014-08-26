@@ -36,7 +36,15 @@ def internal_error(error):
 def index(page = 1):
     user_id = request.args.get('user_id')
     tag_id = request.args.get('tag_id')
+    if tag_id != None:
+        tags = tag_id.split(' ')
+    
     was_cooked = request.args.get('was_cooked')
+    
+    
+    flash(user_id)
+    flash(tags)
+    
     #tag_list = ['1','4']
     #tag_list = or_(*tag_list)
     #flash(tag_id)
@@ -45,11 +53,17 @@ def index(page = 1):
         recipes = Recipe.query.paginate(page, RECIPES_PER_PAGE, False)
     else:
         if tag_id != None:
-            t = Tag.query.filter('id='+tag_id).first()
-            #tag_filter = []
+            if len(tags) > 1:
+                tag_filter = [('id='+t) for t in tags]
+                tag_filter = and_(*tag_filter)
+                t = Tag.query.filter(tag_filter)
+            else:
+                t = Tag.query.filter('id='+tag_id).first()
+                import pdb; pdb.set_trace()
+    #tag_filter = []
             #for t in tag_list:
              #   tag_filter.append('tag.id=' + str(t))
-            t#ag_filter = and_(*tag_filter)
+            #ag_filter = and_(*tag_filter)
             #t = Tag.query.filter(tag_filter)
             recipes = t.recipe
             flash(recipes)
