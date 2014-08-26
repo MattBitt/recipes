@@ -4,7 +4,7 @@
 {% include 'flash.html' %}
 <a href="{{url_for('edit_recipe',id=recipe['id'])}}">Edit</a>
 <a href="{{url_for('print_recipe',id=recipe['id'])}}">Print</a>
-{% if recipe['url'] %}
+{% if recipe['url'] %} <!--!= "http://" %} -->
 <p><a href="{{recipe['url']}}">{{recipe['url']}}</a></p>
 {% endif %}
 {% include 'recipe.html' %}
