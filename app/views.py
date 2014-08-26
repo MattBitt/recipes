@@ -92,12 +92,13 @@ def user(nickname, page = 1):
         posts = posts)
 
 
-@app.route('/add_recipe',methods = ['GET', 'POST']) 
-@app.route('/add_recipe/<source>',methods = ['GET', 'POST']) 
+@app.route('/add_recipe/',methods = ['GET', 'POST']) 
+@app.route('/add_recipe/<source_url>',methods = ['GET']) 
 @login_required
-def add_recipe(source = None):
+def add_recipe(source_url = None):
     form = RecipeForm(request.form)
-
+    
+    flash(source_url)
     print request.method
     if request.method == "POST":
         recipe = Recipe()
@@ -110,6 +111,9 @@ def add_recipe(source = None):
         else:
             return render_template('add_recipe.html',form = form)
     elif request.method != "POST":
+        if source_url != None:
+            print "Source"
+            print source_url
         return render_template('add_recipe.html',form = form)
     return redirect(url_for('add_recipe'))
 

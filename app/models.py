@@ -41,10 +41,10 @@ class User(db.Model):
 
 
 
-#tags = db.Table('tags',
- #   db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
-  #  db.Column('recipe_id', db.Integer, db.ForeignKey('recipe_id'))
-#)
+tags = db.Table('tags',
+   db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+   db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'))
+)
 
  
 class Recipe(db.Model):
@@ -55,21 +55,38 @@ class Recipe(db.Model):
     directions = db.Column(db.Text)
     ingredients = db.Column(db.Text)
     notes = db.Column(db.Text)
-    #directions = db.relationship('Direction', backref = 'recipe', lazy = 'dynamic')
-    #ingredient = db.relationship('Ingredient', backref = 'recipe', lazy = 'dynamic')
-    #notes = db.relationship('Note', backref = 'recipe', lazy = 'dynamic')
     url = db.Column(db.String(150))
     image_path = db.Column(db.String(150))
     was_cooked = db.Column(db.Boolean)
     rating = db.Column(db.Integer)
-    
+    my_tags = db.relationship('Tag', secondary=tags,
+        backref=db.backref('recipe', lazy='dynamic'))
+        
     def __repr__(self):
-        return '<Recipe %r - %r>' % (self.id, self.recipe_name)    
-
-#class Tag(db.Model):
-    #id = db.Column(db.Integer, primary_key=True)
-    #tag_name = db.Column(db.String(20))
+        return '<Recipe %r - %r>' % (self.id, self.recipe_name)
     
-    #def __repr__(self):
-        #return '<Tag %r>' % (self.tag_name)    
+    
+    def add_tag(self, tag):
+        if not self.has_tag(tag):
+            self.my_tags.append(tag)
+            return self
+            
+    def remove_tag(self, tag):
+        if self.has_tag(tag):
+            self.my_tags.remove(tag)
+            return self
+    
+    def has_tag(self, tag):
+        #return self.my_tags.filter(tags.c.tag.id == recipe.id).count() > 0
+        return tag in self.my_tags
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tag_name = db.Column(db.String(80))
+    
+    #def get_recipes(self):
+     #   return self.Tag.query.filter(tags.c.tag.id == recipe.id).count() > 0
+        
+    def __repr__(self):
+        return '<Tag %r>' % (self.tag_name)    
     
