@@ -2,9 +2,10 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
 from forms import LoginForm, RecipeForm
-from models import User, ROLE_USER, ROLE_ADMIN, Recipe
+from models import User, ROLE_USER, ROLE_ADMIN, Recipe, Tag
 from datetime import datetime
 from config import RECIPES_PER_PAGE
+from sqlalchemy import and_, or_
 
 @lm.user_loader
 def load_user(id):
@@ -33,7 +34,34 @@ def internal_error(error):
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 @login_required
 def index(page = 1):
-    recipes = Recipe.query.paginate(page, RECIPES_PER_PAGE, False)
+    user_id = request.args.get('user_id')
+    tag_id = request.args.get('tag_id')
+    was_cooked = request.args.get('was_cooked')
+    #tag_list = ['1','4']
+    #tag_list = or_(*tag_list)
+    #flash(tag_id)
+    recipes = Recipe.query
+    if user_id == None and tag_id == None:
+        recipes = Recipe.query.paginate(page, RECIPES_PER_PAGE, False)
+    else:
+        if tag_id != None:
+            t = Tag.query.filter('id='+tag_id).first()
+            #tag_filter = []
+            #for t in tag_list:
+             #   tag_filter.append('tag.id=' + str(t))
+            t#ag_filter = and_(*tag_filter)
+            #t = Tag.query.filter(tag_filter)
+            recipes = t.recipe
+            flash(recipes)
+        index_filter = []
+        if user_id != None:
+            index_filter.append('user_id=' + str(user_id))
+        if was_cooked != None:
+            index_filter.append('was_cooked=' + str(was_cooked))
+        index_filter = and_(*index_filter)
+        recipes = recipes.filter(index_filter)
+        recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    
     flash('Loading Recipes')
     return render_template('index.html',
         title = 'Home',
