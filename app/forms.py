@@ -1,7 +1,8 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, BooleanField, TextAreaField, IntegerField
+from wtforms import TextField, BooleanField, TextAreaField, IntegerField, widgets
 from wtforms.validators import DataRequired, Length, URL, Optional, NumberRange
-from app.models import User
+from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
+from app.models import User, Tag, Recipe
 
 
 
@@ -17,7 +18,12 @@ class RecipeForm(Form):
     notes = TextAreaField('notes', validators = [Length(min = 0, max = 3000)])
     url = TextField('recipe_url', 
         validators = [URL(require_tld=False, message="Invalid URL"), Optional()])
-        
+    tags = QuerySelectMultipleField(
+            query_factory= lambda: Tag.query.all(),
+            get_label=lambda a: a.tag_name,
+            widget=widgets.ListWidget(prefix_label=False),
+            option_widget=widgets.CheckboxInput()
+            )
         
     image_path = TextField('recipe_name')
     was_cooked = BooleanField('was_cooked')

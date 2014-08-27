@@ -153,6 +153,9 @@ def edit_recipe(id=1):
         return redirect(url_for('index'))
     if form.validate_on_submit():
         form.populate_obj(recipe)
+        import pdb; pdb.set_trace()
+        for new_tag in form.tags.data:
+            recipe.add_tag( new_tag )
         db.session.add(recipe)
         db.session.commit()
         flash('Your changes have been saved.')
