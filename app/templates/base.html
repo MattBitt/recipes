@@ -24,9 +24,11 @@
           </a>
           <a class="brand" href="/">Recipes</a>
             <ul class="nav">
-              <li><a href="{{ url_for('index') }}">Home</a></li>
+              <li><a href="{{ url_for('index') }}">Our Recipes</a></li>
+              <li><a href="{{ url_for('mom') }}">Mom's Recipes</a></li>
+              
               {% if g.user.is_authenticated() %}
-              <li><a href="{{ url_for('add_recipe') }}">New Recipe</a></li>
+              <li><a href="{{ url_for('add_recipe') }}">Add Recipe</a></li>
               <li><a href="{{ url_for('logout') }}">Logout</a></li>
               {% endif %}
             </ul>

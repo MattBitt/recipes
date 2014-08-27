@@ -9,14 +9,16 @@
 {% endfor %}
 <ul class="pager">
     {% if recipes.has_prev %}
-    <li class="previous"><a href="{{ url_for('index', page = recipes.prev_num) }}">Previous page</a></li>
+    <li class="previous"><a href="{{ url_for(url_path,was_cooked=was_cooked, tag_id=tag_id, page = recipes.prev_num) }}">Previous page</a></li>
     {% else %}
     <li class="previous disabled"><a href="#">Previous page</a></li>
     {% endif %}
     {% if recipes.has_next %}
-    <li class="next"><a href="{{ url_for('index', page = recipes.next_num) }}">Next page</a></li>
+    <li class="next"><a href="{{ url_for(url_path,was_cooked=was_cooked, tag_id=tag_id, page = recipes.next_num) }}">Next page</a></li>
     {% else %}
     <li class="next disabled"><a href="#">Next page</a></li>
     {% endif %}
 </ul>
+
+{% include 'tags.html' %}
 {% endblock %}

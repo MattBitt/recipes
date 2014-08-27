@@ -41,7 +41,7 @@ class User(db.Model):
 
 
 
-tags = db.Table('tags',
+recipe_tags = db.Table('tags',
    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
    db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'))
 )
@@ -59,7 +59,7 @@ class Recipe(db.Model):
     image_path = db.Column(db.String(150))
     was_cooked = db.Column(db.Boolean)
     rating = db.Column(db.Integer)
-    my_tags = db.relationship('Tag', secondary=tags,
+    my_tags = db.relationship('Tag', secondary=recipe_tags,
         backref=db.backref('recipe', lazy='dynamic'))
         
     def __repr__(self):
@@ -84,8 +84,6 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tag_name = db.Column(db.String(80))
     
-    #def get_recipes(self):
-     #   return self.Tag.query.filter(tags.c.tag.id == recipe.id).count() > 0
         
     def __repr__(self):
         return '<Tag %r>' % (self.tag_name)    

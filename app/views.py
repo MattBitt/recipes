@@ -34,53 +34,64 @@ def internal_error(error):
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 @login_required
 def index(page = 1):
-    user_id = request.args.get('user_id')
-    tag_id = request.args.get('tag_id')
-    if tag_id != None:
-        tags = tag_id.split(' ')
-    
-    was_cooked = request.args.get('was_cooked')
-    
-    
-    flash(user_id)
-    flash(tags)
-    
-    #tag_list = ['1','4']
-    #tag_list = or_(*tag_list)
-    #flash(tag_id)
-    recipes = Recipe.query
-    if user_id == None and tag_id == None:
-        recipes = Recipe.query.paginate(page, RECIPES_PER_PAGE, False)
-    else:
-        if tag_id != None:
-            if len(tags) > 1:
-                tag_filter = [('id='+t) for t in tags]
-                tag_filter = and_(*tag_filter)
-                t = Tag.query.filter(tag_filter)
-            else:
-                t = Tag.query.filter('id='+tag_id).first()
-                import pdb; pdb.set_trace()
-    #tag_filter = []
-            #for t in tag_list:
-             #   tag_filter.append('tag.id=' + str(t))
-            #ag_filter = and_(*tag_filter)
-            #t = Tag.query.filter(tag_filter)
-            recipes = t.recipe
-            flash(recipes)
-        index_filter = []
-        if user_id != None:
-            index_filter.append('user_id=' + str(user_id))
-        if was_cooked != None:
-            index_filter.append('was_cooked=' + str(was_cooked))
-        index_filter = and_(*index_filter)
-        recipes = recipes.filter(index_filter)
-        recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
+    was_cooked = None
+    tag_id = None
+    tag_list = []
+    for t in Tag.query.all():
+        tag_list.append(t.tag_name)
+        
+    for k,v in request.args.items():
+        if k == 'tag_id':
+            recipes = recipes.filter(Recipe.my_tags.any(tag_name=v))
+            tag_id = v
+        else:
+            recipes = recipes.filter(k + '=' + str(v))
+            if k == 'was_cooked':
+                was_cooked = v
+    recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
     
     flash('Loading Recipes')
     return render_template('index.html',
         title = 'Home',
-        recipes = recipes)
+        recipes = recipes,
+        url_path = 'index',
+        was_cooked = was_cooked,
+        tag_id = tag_id,
+        tag_list = tag_list)
 
+@app.route('/', methods = ['GET', 'POST'])
+@app.route('/mom', methods = ['GET', 'POST'])
+@app.route('/mom/<int:page>', methods = ['GET', 'POST'])
+@login_required
+def mom(page = 1):
+    recipes = Recipe.query.filter(Recipe.user_id == 2)
+    was_cooked = None
+    tag_id = None
+    tag_list = []
+    for t in Tag.query.all():
+        tag_list.append(t.tag_name)
+        
+    for k,v in request.args.items():
+        if k == 'tag_id':
+            recipes = recipes.filter(Recipe.my_tags.any(tag_name=v))
+            tag_id = v
+        else:
+            recipes = recipes.filter(k + '=' + str(v))
+            if k == 'was_cooked':
+                was_cooked = v
+    recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    
+    flash('Loading Recipes')
+    return render_template('index.html',
+        title = 'Mom\'s Recipes',
+        recipes = recipes,
+        url_path = 'mom',
+        was_cooked = was_cooked,
+        tag_id = tag_id,
+        tag_list = tag_list)        
+        
+        
 @app.route('/login', methods = ['GET', 'POST'])
 @oid.loginhandler
 def login():
