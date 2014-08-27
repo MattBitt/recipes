@@ -35,8 +35,7 @@ def internal_error(error):
 @login_required
 def index(page = 1):
     recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
-    was_cooked = None
-    tag_id = None
+    filters = { 'was_cooked':None, 'tag_id':None }
     tag_list = []
     for t in Tag.query.all():
         tag_list.append(t.tag_name)
@@ -44,53 +43,27 @@ def index(page = 1):
     for k,v in request.args.items():
         if k == 'tag_id':
             recipes = recipes.filter(Recipe.my_tags.any(tag_name=v))
-            tag_id = v
+            filters['tag_id'] = v
         else:
             recipes = recipes.filter(k + '=' + str(v))
             if k == 'was_cooked':
-                was_cooked = v
+                filters['was_cooked'] = v
     recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    prev_filters = filters
+    next_filters = filters
+    prev_filters['page'] = recipes.prev_num
+    next_filters['page'] = recipes.next_num
     
     flash('Loading Recipes')
     return render_template('index.html',
         title = 'Home',
         recipes = recipes,
         url_path = 'index',
-        was_cooked = was_cooked,
-        tag_id = tag_id,
+        prev_filters = prev_filters,
+        next_filters = next_filters,
         tag_list = tag_list)
 
-@app.route('/', methods = ['GET', 'POST'])
-@app.route('/mom', methods = ['GET', 'POST'])
-@app.route('/mom/<int:page>', methods = ['GET', 'POST'])
-@login_required
-def mom(page = 1):
-    recipes = Recipe.query.filter(Recipe.user_id == 2)
-    was_cooked = None
-    tag_id = None
-    tag_list = []
-    for t in Tag.query.all():
-        tag_list.append(t.tag_name)
-        
-    for k,v in request.args.items():
-        if k == 'tag_id':
-            recipes = recipes.filter(Recipe.my_tags.any(tag_name=v))
-            tag_id = v
-        else:
-            recipes = recipes.filter(k + '=' + str(v))
-            if k == 'was_cooked':
-                was_cooked = v
-    recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
-    
-    flash('Loading Recipes')
-    return render_template('index.html',
-        title = 'Mom\'s Recipes',
-        recipes = recipes,
-        url_path = 'mom',
-        was_cooked = was_cooked,
-        tag_id = tag_id,
-        tag_list = tag_list)        
-        
+
         
 @app.route('/login', methods = ['GET', 'POST'])
 @oid.loginhandler
