@@ -79,15 +79,6 @@
                 {% endfor %}
              </div>
         </div>
-        <div class="control-group{% if form.errors.tags %} error{% endif %}">
-            <label class="control-label" for="tags">Tags:</label>
-            <div class="controls">
-                {{ form.tags(maxlength =128, class = "span4") }}
-                {% for error in form.errors.tags %}
-                    <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-             </div>
-        </div>
         <div class="control-group">
             <div class="controls">
                 <input class="btn btn-primary" type="submit" value="Save Changes">

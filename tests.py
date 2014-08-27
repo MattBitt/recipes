@@ -69,80 +69,8 @@ class TestCase(unittest.TestCase):
         assert recipes[0].recipe_name == "Test Recipe"
         
         
-    def test_create_tags(self):
-        new_tag = Tag(tag_name = "breakfast")
-        db.session.add(new_tag)
-        db.session.commit()
-        tags = Tag.query.all()
-        assert tags[0].tag_name == "breakfast"
-        
-    def test_delete_tag(self):
-        new_tag = Tag(tag_name = "breakfast")
-        db.session.add(new_tag)
-        db.session.commit()
-        tags = Tag.query.all()
-        assert len(tags) == 1
-        db.session.delete(tags[0])
-        db.session.commit()
-        tags = Tag.query.all()
-        assert len(tags) == 0
-        
-    def test_add_tag(self):
-        new_tag1 = Tag(tag_name = "breakfast")
-        db.session.add(new_tag1)
-        db.session.commit()
-        new_recipe = Recipe(recipe_name = "Test Recipe", 
-            ingredients = "2 eggs\nbacon",
-            directions = "cook eggs \n in bacon grease",
-            notes = "breakfast",
-            url = "www.google.com",
-            rating = 4,
-            was_cooked = 1)
-        db.session.add(new_recipe)
-        db.session.commit()
-        assert new_recipe.has_tag( new_tag1 ) == False
-        new_recipe.add_tag(new_tag1)
-        assert new_recipe.has_tag( new_tag1 ) == True
-        assert len(new_recipe.my_tags) == 1
-        new_recipe.add_tag(new_tag1)
-        assert len(new_recipe.my_tags) == 1
-        new_tag2 = Tag(tag_name = "lunch")
-        new_recipe.add_tag(new_tag2)
-        assert len(new_recipe.my_tags) == 2
-        new_recipe.remove_tag(new_tag2)
-        assert len(new_recipe.my_tags) == 1
     
-    
-    
-    def test_find_recipes_with_tag(self):
-        new_tag = Tag(tag_name = "breakfast")
-        db.session.add(new_tag)
-        db.session.commit()
-        new_recipe = Recipe(recipe_name = "Test Recipe #2")
-        new_recipe.add_tag(new_tag)
-        db.session.add(new_recipe)
-        db.session.commit()
-        assert len(new_tag.recipe.all()) == 1
-        new_recipe = Recipe(recipe_name = "Test Recipe")
-        new_recipe.add_tag(new_tag)
-        db.session.add(new_recipe)
-        db.session.commit()
 
-        assert len(new_tag.recipe.all()) == 2
-        
-        new_tag2 = Tag(tag_name = "lunch")
-        new_recipe.add_tag(new_tag2)
-        db.session.add(new_recipe)
-        db.session.commit()
-        
-        assert len(new_tag2.recipe.all()) == 1
-        
-
-#        t = Tag.query.filter_by(id =1).first()
-        #import pdb; pdb.set_trace()
-#        rec =  Recipe.query.all()
-#        print rec[0].my_tags
-        
         
         
 if __name__ == '__main__':

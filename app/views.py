@@ -2,9 +2,9 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
 from forms import LoginForm, RecipeForm
-from models import User, ROLE_USER, ROLE_ADMIN, Recipe, Tag
+from models import User, ROLE_USER, ROLE_ADMIN, Recipe
 from datetime import datetime
-from config import RECIPES_PER_PAGE
+from config import RECIPES_PER_PAGE, OUR_RECIPES, MOMS_RECIPES, MEAL_IDEAS
 from sqlalchemy import and_, or_
 
 @lm.user_loader
@@ -30,38 +30,38 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 @app.route('/', methods = ['GET', 'POST'])
-@app.route('/index', methods = ['GET', 'POST'])
+@app.route('/index/', methods = ['GET', 'POST'])
+@app.route('/index/<recipe_type>', methods = ['GET', 'POST'])
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 @login_required
-def index(page = 1):
-    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
-    filters = { 'was_cooked':None, 'tag_id':None }
-    tag_list = []
-    for t in Tag.query.all():
-        tag_list.append(t.tag_name)
+def index(page = 1, recipe_type=OUR_RECIPES):
+    if recipe_type == OUR_RECIPES:
+        recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
+        recipes = recipes.filter('was_cooked=1')
         
-    for k,v in request.args.items():
-        if k == 'tag_id':
-            recipes = recipes.filter(Recipe.my_tags.any(tag_name=v))
-            filters['tag_id'] = v
-        else:
-            recipes = recipes.filter(k + '=' + str(v))
-            if k == 'was_cooked':
-                filters['was_cooked'] = v
+    elif recipe_type == MOMS_RECIPES:
+        recipes = Recipe.query.filter(Recipe.user_id.in_((2,10)))
+    elif recipe_type == MEAL_IDEAS:
+        recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
+        recipes = recipes.filter('was_cooked=0')
+    else:
+        recipes = Recipe.query
+    
+    filters = { 'was_cooked':None}
     recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
     prev_filters = filters
     next_filters = filters
-    prev_filters['page'] = recipes.prev_num
-    next_filters['page'] = recipes.next_num
+    #prev_filters['page'] = recipes.prev_num
+    #next_filters['page'] = recipes.next_num
     
     flash('Loading Recipes')
     return render_template('index.html',
         title = 'Home',
         recipes = recipes,
-        url_path = 'index',
+        url_path = index,
         prev_filters = prev_filters,
-        next_filters = next_filters,
-        tag_list = tag_list)
+        next_filters = next_filters
+        )
 
 
         
@@ -153,9 +153,6 @@ def edit_recipe(id=1):
         return redirect(url_for('index'))
     if form.validate_on_submit():
         form.populate_obj(recipe)
-        import pdb; pdb.set_trace()
-        for new_tag in form.tags.data:
-            recipe.add_tag( new_tag )
         db.session.add(recipe)
         db.session.commit()
         flash('Your changes have been saved.')
