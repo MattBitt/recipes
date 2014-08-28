@@ -31,39 +31,58 @@ def internal_error(error):
 
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index/', methods = ['GET', 'POST'])
-@app.route('/index/<recipe_type>', methods = ['GET', 'POST'])
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 @login_required
-def index(page = 1, recipe_type=OUR_RECIPES):
-    if recipe_type == OUR_RECIPES:
-        recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
-        recipes = recipes.filter('was_cooked=1')
-        
-    elif recipe_type == MOMS_RECIPES:
-        recipes = Recipe.query.filter(Recipe.user_id.in_((2,10)))
-    elif recipe_type == MEAL_IDEAS:
-        recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
-        recipes = recipes.filter('was_cooked=0')
-    else:
-        recipes = Recipe.query
-    
-    filters = { 'was_cooked':None}
+def index(page = 1):
+    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
     recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
-    prev_filters = filters
-    next_filters = filters
-    #prev_filters['page'] = recipes.prev_num
-    #next_filters['page'] = recipes.next_num
-    
     flash('Loading Recipes')
     return render_template('index.html',
         title = 'Home',
         recipes = recipes,
-        url_path = index,
-        prev_filters = prev_filters,
-        next_filters = next_filters
+        url_base = 'index'
         )
 
+@app.route('/our_recipes/', methods = ['GET', 'POST'])
+@app.route('/our_recipes/<int:page>', methods = ['GET', 'POST'])
+@login_required
+def our_recipes( page=1 ):
+    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
+    recipes = recipes.filter('was_cooked=1')
+    
+    recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    flash('Loading Recipes')
+    return render_template('index.html',
+        title = 'Our Recipes',
+        recipes = recipes,
+        url_base = 'our_recipes'
+        )
+    
+    
+@app.route('/moms_recipes/', methods = ['GET', 'POST'])
+@app.route('/moms_recipes/<int:page>', methods = ['GET', 'POST'])
+def moms_recipes( page=1 ):
+    recipes = Recipe.query.filter(Recipe.user_id.in_((2,10)))        
+    recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    flash('Loading Recipes')
+    return render_template('index.html',
+        title = 'Moms Recipes',
+        recipes = recipes,
+        url_base = 'moms_recipes'
+        )   
 
+@app.route('/meal_ideas/', methods = ['GET', 'POST'])
+@app.route('/meal_ideas/<int:page>', methods = ['GET', 'POST'])
+def meal_ideas( page=1 ):
+    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
+    recipes = recipes.filter('was_cooked=0')
+    recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    flash('Loading Recipes')
+    return render_template('index.html',
+        title = 'Meal Ideas',
+        recipes = recipes,
+        url_base = 'meal_ideas'
+        )  
         
 @app.route('/login', methods = ['GET', 'POST'])
 @oid.loginhandler
