@@ -45,7 +45,7 @@ class AllRecipes (RecipeScraper):
             direcs += d[0] + '\n'
         return direcs
     
-class SkinnyTasteRecipe (RecipeScraper):
+class SkinnyTaste (RecipeScraper):
     def __init__(self, url):
         self.url = url
         self.title_xpath = '//*[@id="Blog1"]/div[1]/div/div/div/div[1]/div[2]/b/text()'
@@ -89,10 +89,15 @@ class SkinnyTasteRecipe (RecipeScraper):
 #print ar.get_ingredients()
 #print ar.get_directions()
 
-st = SkinnyTasteRecipe('http://www.skinnytaste.com/2014/08/grilled-veggie-towers-with-mozzarella.html#more')
+#t = SkinnyTasteRecipe('http://www.skinnytaste.com/2014/08/grilled-veggie-towers-with-mozzarella.html#more')
 #print st.get_title()
 #print st.get_ingredients()
-print st.get_directions()
+#rint st.get_directions()
+def scrape_recipe( recipe_url ):
+    recipe = SkinnyTaste(url=recipe_url)
+    return recipe
+    #print recipe.get_ingredients()
+    #print recipe.get_directions()
 
 
 
