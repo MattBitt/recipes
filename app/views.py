@@ -152,13 +152,11 @@ def user(nickname, page = 1):
 
 
 @app.route('/add_recipe/',methods = ['GET', 'POST']) 
-#@app.route('/add_recipe/<source_url>',methods = ['GET']) 
 @login_required
 def add_recipe():
     form = RecipeForm(request.form)
     if request.query_string[:4] == "url=":
         new_recipe = scrape_recipe(request.query_string[4:])
-        #import pdb; pdb.set_trace()
         form.recipe_name.data = new_recipe.get_title()
         form.ingredients.data = new_recipe.get_ingredients()
         form.directions.data = new_recipe.get_directions()
