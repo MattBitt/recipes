@@ -13,7 +13,5 @@ OPENID_PROVIDERS = [
 
 # administrator list
 
-RECIPES_PER_PAGE = 20
-OUR_RECIPES = 'our'
-MOMS_RECIPES = 'moms'
-MEAL_IDEAS = 'meal-ideas'
+RECIPES_PER_PAGE = 10
+RECIPES_PER_HOME_PAGE = 4

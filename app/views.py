@@ -1,11 +1,12 @@
+import random
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
 from forms import LoginForm, RecipeForm
 from models import User, ROLE_USER, ROLE_ADMIN, Recipe
 from datetime import datetime
-from config import RECIPES_PER_PAGE, OUR_RECIPES, MOMS_RECIPES, MEAL_IDEAS
-from sqlalchemy import and_, or_
+from config import RECIPES_PER_PAGE, RECIPES_PER_HOME_PAGE
+from sqlalchemy import desc
 from scraper import scrape_recipe
 
 @lm.user_loader
@@ -35,12 +36,25 @@ def internal_error(error):
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 @login_required
 def index(page = 1):
-    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
-    recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    recent_recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).order_by(desc(Recipe.timestamp))
+    recent_recipes = recent_recipes.paginate(page, RECIPES_PER_HOME_PAGE, False)
+    favorite_recipes = Recipe.query.filter('rating=5')
+    random_favs = []
+    while len(random_favs) < RECIPES_PER_HOME_PAGE:
+        random_row = int(favorite_recipes.count()*random.random())
+        if random_row not in random_favs:
+            random_favs.append(random_row)
+    #import pdb; pdb.set_trace()
+    random_fav_ids = []
+    for f in random_favs:
+        random_fav_ids.append(favorite_recipes[f].id)
+    favorite_recipes = Recipe.query.filter(Recipe.id.in_(random_fav_ids))
+    favorite_recipes = favorite_recipes.paginate(page, RECIPES_PER_HOME_PAGE, False)
     flash('Loading Recipes')
     return render_template('index.html',
         title = 'Home',
-        recipes = recipes,
+        recent_recipes = recent_recipes,
+        favorite_recipes = favorite_recipes,
         url_base = 'index'
         )
 
@@ -48,12 +62,11 @@ def index(page = 1):
 @app.route('/our_recipes/<int:page>', methods = ['GET', 'POST'])
 @login_required
 def our_recipes( page=1 ):
-    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
-    recipes = recipes.filter('was_cooked=1')
-    
+    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=1').order_by(Recipe.recipe_name)
     recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    #import pdb; pdb.set_trace()
     flash('Loading Recipes')
-    return render_template('index.html',
+    return render_template('browse.html',
         title = 'Our Recipes',
         recipes = recipes,
         url_base = 'our_recipes'
@@ -63,10 +76,10 @@ def our_recipes( page=1 ):
 @app.route('/moms_recipes/', methods = ['GET', 'POST'])
 @app.route('/moms_recipes/<int:page>', methods = ['GET', 'POST'])
 def moms_recipes( page=1 ):
-    recipes = Recipe.query.filter(Recipe.user_id.in_((2,10)))        
+    recipes = Recipe.query.filter('user_id=2').order_by(Recipe.recipe_name)        
     recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
     flash('Loading Recipes')
-    return render_template('index.html',
+    return render_template('browse.html',
         title = 'Moms Recipes',
         recipes = recipes,
         url_base = 'moms_recipes'
@@ -75,11 +88,11 @@ def moms_recipes( page=1 ):
 @app.route('/meal_ideas/', methods = ['GET', 'POST'])
 @app.route('/meal_ideas/<int:page>', methods = ['GET', 'POST'])
 def meal_ideas( page=1 ):
-    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3)))
+    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=0').order_by(Recipe.recipe_name)
     recipes = recipes.filter('was_cooked=0')
     recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
     flash('Loading Recipes')
-    return render_template('index.html',
+    return render_template('browse.html',
         title = 'Meal Ideas',
         recipes = recipes,
         url_base = 'meal_ideas'

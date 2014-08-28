@@ -4,15 +4,10 @@
 {% block content %}
 <h1>Our Family Recipes</h1>
 {% include 'flash.html' %}
-<h2>Recently Added</h2>
-{% for recipe in recent_recipes.items %}
+{{ filters}}
+{% for recipe in recipes.items %}
     <p> <a href="{{url_for('view_recipe', id = recipe['id']) }}" > {{ recipe["recipe_name"] }}  </a></p>
 {% endfor %}
-<h2>Favorites</h2>
-{% for recipe in favorite_recipes.items %}
-    <p> <a href="{{url_for('view_recipe', id = recipe['id']) }}" > {{ recipe["recipe_name"] }}  </a></p>
-{% endfor %}
-
-
+{% include 'pager.html' %}
 
 {% endblock %}
