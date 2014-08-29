@@ -232,6 +232,11 @@ def print_recipe(id):
             recipe.note_list = recipe.notes.split('\n')
     return render_template('print_recipe.html',
         recipe = recipe)
+
+
+
+
+
         
 def fillout_form( url ):
     #import pdb; pdb.set_trace()
@@ -251,6 +256,9 @@ def fillout_form( url ):
 def save_recipe( form ):                
     recipe=Recipe()
     form.populate_obj(recipe)
+    if recipe.image_path != None:
+        image_file = secure_filename(form.image_file.file.filename)
+        form.image_file.file.save(UPLOAD_PATH + image_path)
     recipe.user_id = 1
     db.session.add(recipe)
     db.session.commit()

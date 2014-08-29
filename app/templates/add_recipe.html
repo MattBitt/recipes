@@ -79,6 +79,15 @@
                 {% endfor %}
              </div>
         </div>
+        <div class="control-group{% if form.errors.image_file %} error{% endif %}">
+            <label class="control-label" for="image_file">Image:</label>
+            <div class="controls">
+                {{ form.rating(maxlength =128, class = "span4") }}
+                {% for error in form.errors.image_file %}
+                    <span class="help-inline">[{{error}}]</span><br>
+                {% endfor %}
+             </div>
+        </div>
         <div class="control-group">
             <div class="controls">
                 <input class="btn btn-primary" type="submit" value="Save Changes">

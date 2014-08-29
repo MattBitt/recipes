@@ -5,9 +5,15 @@ from flask.ext.login import LoginManager
 from flask.ext.openid import OpenID
 from config import basedir
 from momentjs import momentjs
+from werkzeug import secure_filename
+
+
+UPLOAD_FOLDER = 'images/'
+ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
 app.config.from_object('config')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 lm = LoginManager()
 lm.init_app(app)
@@ -34,3 +40,9 @@ def datetimefilter(value, format='%B %Y'):
     return value.strftime(format)
 
 app.jinja_env.filters['datetimefilter'] = datetimefilter
+
+
+
+
+
+
