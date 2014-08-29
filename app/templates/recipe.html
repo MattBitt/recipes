@@ -3,8 +3,9 @@
 {% if recipe['rating'] %}
 <p>{{recipe['rating']}}</p>
 {% endif %}
+{% if recipe['timestamp'] %}
 <p>{{recipe['timestamp'] | datetimefilter}}</p>
-
+{% endif %}
 <p>Ingredients</p>
 <ul>
 {% for ingredient in recipe.ingredient_list %}

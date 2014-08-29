@@ -5,7 +5,6 @@ from app import app, db, lm, oid
 from forms import LoginForm, RecipeForm
 from models import User, ROLE_USER, ROLE_ADMIN, Recipe
 from datetime import datetime, date
-from config import RECIPES_PER_PAGE, RECIPES_PER_HOME_PAGE, UPLOADS_DEFAULT_DEST
 from sqlalchemy import desc
 from scraper import scrape_recipe
 
@@ -37,10 +36,10 @@ def internal_error(error):
 @login_required
 def index(page = 1):
     recent_recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=1').order_by(desc(Recipe.timestamp))
-    recent_recipes = recent_recipes.paginate(page, RECIPES_PER_HOME_PAGE, False)
+    recent_recipes = recent_recipes.paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
     favorite_recipes = Recipe.query.filter('rating=5')
     random_favs = []
-    while len(random_favs) < RECIPES_PER_HOME_PAGE:
+    while len(random_favs) < app.config['RECIPES_PER_HOME_PAGE']:
         random_row = int(favorite_recipes.count()*random.random())
         if random_row not in random_favs:
             random_favs.append(random_row)
@@ -49,7 +48,7 @@ def index(page = 1):
     for f in random_favs:
         random_fav_ids.append(favorite_recipes[f].id)
     favorite_recipes = Recipe.query.filter(Recipe.id.in_(random_fav_ids))
-    favorite_recipes = favorite_recipes.paginate(page, RECIPES_PER_HOME_PAGE, False)
+    favorite_recipes = favorite_recipes.paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
     flash('Loading Recipes')
     return render_template('index.html',
         title = 'Home',
@@ -63,7 +62,7 @@ def index(page = 1):
 @login_required
 def our_recipes( page=1 ):
     recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=1').order_by(Recipe.recipe_name)
-    recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
     #import pdb; pdb.set_trace()
     flash('Loading Recipes')
     return render_template('browse.html',
@@ -77,7 +76,7 @@ def our_recipes( page=1 ):
 @app.route('/moms_recipes/<int:page>', methods = ['GET', 'POST'])
 def moms_recipes( page=1 ):
     recipes = Recipe.query.filter('user_id=2').order_by(Recipe.recipe_name)        
-    recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
     flash('Loading Recipes')
     return render_template('browse.html',
         title = 'Moms Recipes',
@@ -90,7 +89,7 @@ def moms_recipes( page=1 ):
 def meal_ideas( page=1 ):
     recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=0').order_by(Recipe.recipe_name)
     recipes = recipes.filter('was_cooked=0')
-    recipes = recipes.paginate(page, RECIPES_PER_PAGE, False)
+    recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
     flash('Loading Recipes')
     return render_template('browse.html',
         title = 'Meal Ideas',
@@ -140,7 +139,7 @@ def logout():
     
 @app.route('/user/<nickname>')
 @app.route('/user/<nickname>/<int:page>')
-@login_required
+#@login_required
 def user(nickname, page = 1):
     user = User.query.filter_by(nickname = nickname).first()
     if user == None:
@@ -152,7 +151,7 @@ def user(nickname, page = 1):
 
 
 @app.route('/add_recipe/',methods = ['GET', 'POST']) 
-@login_required
+#@login_required
 def add_recipe():
     flash(request.method)
     if request.query_string[:4] == "url=":
@@ -188,7 +187,7 @@ def edit_recipe(id=1):
         form = form)
 
 @app.route('/view_recipe/<id>',methods = ['GET', 'POST']) 
-@login_required
+#@login_required
 def view_recipe(id):
     recipe = Recipe.query.filter_by(id = id).first()
     if recipe == None:
@@ -205,7 +204,7 @@ def view_recipe(id):
         recipe = recipe)
 
 @app.route('/delete_recipe/<int:id>')
-@login_required
+#@login_required
 def delete_recipe(id):
     recipe = Recipe.query.filter_by(id = id).first()
     if recipe == None:
@@ -217,7 +216,7 @@ def delete_recipe(id):
     return redirect(url_for('index'))
 
 @app.route('/print_recipe/<id>',methods = ['GET', 'POST']) 
-@login_required
+#@login_required
 def print_recipe(id):
     recipe = Recipe.query.filter_by(id = id).first()
     if recipe == None:
@@ -253,9 +252,8 @@ def save_recipe( form ):
     form.populate_obj(recipe)
     if recipe.image_path != None:
         ext = request.files['image_file'].filename[-4:]
-        
         recipe.image_path = str(recipe.recipe_name) + ext
-        request.files['image_file'].save(UPLOADS_DEFAULT_DEST + str(recipe.image_path))
+        request.files['image_file'].save(app.config['UPLOADS_DEFAULT_DEST'] + str(recipe.image_path))
     recipe.user_id = 1
     db.session.add(recipe)
     db.session.commit()

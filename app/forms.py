@@ -4,9 +4,6 @@ from wtforms.validators import DataRequired, Length, URL, Optional, NumberRange
 from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
 from app.models import User, Recipe
 
-
-
-
 class LoginForm(Form):
     openid = TextField('openid', validators = [DataRequired()])
     remember_me = BooleanField('remember_me', default = False)

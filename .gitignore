@@ -2,3 +2,4 @@ tmp/
 *.pyc
 **/*.pyc
 *.egg
+app/static/pictures/*
