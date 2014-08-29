@@ -5,7 +5,7 @@
 <h1>Add a New Recipe</h1>
 {% include 'flash.html' %}
 <div class="well">
-    <form class="form-horizontal" action="" method="post" name="add_recipe">
+    <form class="form-horizontal" action="" method="post" name="add_recipe" enctype="multipart/form-data">
         {{form.hidden_tag()}}
         <div class="control-group{% if form.errors.recipe_name %} error{% endif %}">
             <label class="control-label" for="recipe_name">Recipe Name:</label>
@@ -79,9 +79,19 @@
                 {% endfor %}
              </div>
         </div>
-        <div class="control-group{% if form.errors.image_file %} error{% endif %}">
-            <label class="control-label" for="image_file">Image:</label>
+ <div class="control-group{% if form.errors.image_file %} error{% endif %}">
+            <label class="control-label" for="image_file">Cooked?:</label>
             <div class="controls">
+                {{ form.image_file(maxlength =128, class = "span4") }}
+                {% for error in form.errors.image_file %}
+                    <span class="help-inline">[{{error}}]</span><br>
+                {% endfor %}
+             </div>
+        </div>
+         
+
+
+
                 {{ form.rating(maxlength =128, class = "span4") }}
                 {% for error in form.errors.image_file %}
                     <span class="help-inline">[{{error}}]</span><br>

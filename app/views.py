@@ -5,7 +5,7 @@ from app import app, db, lm, oid
 from forms import LoginForm, RecipeForm
 from models import User, ROLE_USER, ROLE_ADMIN, Recipe
 from datetime import datetime, date
-from config import RECIPES_PER_PAGE, RECIPES_PER_HOME_PAGE
+from config import RECIPES_PER_PAGE, RECIPES_PER_HOME_PAGE, UPLOADS_DEFAULT_DEST
 from sqlalchemy import desc
 from scraper import scrape_recipe
 
@@ -183,7 +183,7 @@ def edit_recipe(id=1):
         db.session.add(recipe)
         db.session.commit()
         flash('Your changes have been saved.')
-        return redirect(url_for('edit_recipe', id=id))
+        return redirect(url_for('view_recipe', id=id))
     return render_template('edit_recipe.html',
         form = form)
 
@@ -232,12 +232,7 @@ def print_recipe(id):
             recipe.note_list = recipe.notes.split('\n')
     return render_template('print_recipe.html',
         recipe = recipe)
-
-
-
-
-
-        
+       
 def fillout_form( url ):
     #import pdb; pdb.set_trace()
     new_recipe = scrape_recipe(url)
@@ -257,8 +252,10 @@ def save_recipe( form ):
     recipe=Recipe()
     form.populate_obj(recipe)
     if recipe.image_path != None:
-        image_file = secure_filename(form.image_file.file.filename)
-        form.image_file.file.save(UPLOAD_PATH + image_path)
+        ext = request.files['image_file'].filename[-4:]
+        
+        recipe.image_path = str(recipe.recipe_name) + ext
+        request.files['image_file'].save(UPLOADS_DEFAULT_DEST + str(recipe.image_path))
     recipe.user_id = 1
     db.session.add(recipe)
     db.session.commit()

@@ -7,6 +7,9 @@
 {% if recipe['url'] %} <!--!= "http://" %} -->
 <p><a href="{{recipe['url']}}">{{recipe['url']}}</a></p>
 {% endif %}
+{% if recipe['image_path'] %}
+<img src="/static/pictures/{{ recipe['image_path']}}">
+{% endif %}
 {% include 'recipe.html' %}
 
 <a href="{{url_for('delete_recipe',id=recipe['id'])}}">Delete</a> (This cannot be undone)
