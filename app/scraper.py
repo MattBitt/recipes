@@ -64,7 +64,6 @@ class SkinnyTaste(RecipeScraper):
         
 
 def scrape_recipe( url ):
-    print url
     if url.lower().find('allrecipes.com') > -1:
         return AllRecipes( url )
     elif url.lower().find('skinnytaste.com') >-1:
