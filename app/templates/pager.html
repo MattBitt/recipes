@@ -1,4 +1,5 @@
 <ul class="pager">
+{% if recipes.has_prev or recipes.has_next %}
     {% if recipes.has_prev %}
     <li class="previous"><a href="{{ url_for(url_base, page=recipes.prev_num) }}">Previous page</a></li>
     {% else %}
@@ -12,4 +13,5 @@
     {% else %}
     <li class="next disabled"><a href="#">Next page</a></li>
     {% endif %}
+{% endif %}
 </ul>

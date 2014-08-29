@@ -19,7 +19,7 @@
         <div class="control-group{% if form.errors.ingredients %} error{% endif %}">
             <label class="control-label" for="ingredients">Ingredients:</label>
             <div class="controls">
-                {{ form.ingredients(cols = 64, rows = 4, class = "span4") }}
+                {{ form.ingredients(cols = 80, rows = 8, class = "span4") }}
                 {% for error in form.errors.ingredients %}
                     <span class="help-inline">[{{error}}]</span><br>
                 {% endfor %}
@@ -28,7 +28,7 @@
         <div class="control-group{% if form.errors.directions %} error{% endif %}">
             <label class="control-label" for="directions">Directions:</label>
             <div class="controls">
-                {{ form.directions(cols = 64, rows = 4, class = "span4") }}
+                {{ form.directions(cols = 80, rows = 8, class = "span4") }}
                 {% for error in form.errors.directions %}
                     <span class="help-inline">[{{error}}]</span><br>
                 {% endfor %}

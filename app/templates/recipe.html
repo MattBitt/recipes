@@ -1,5 +1,10 @@
 {% block content %}
 <h1>{{ recipe['recipe_name'] }}</h1>
+{% if recipe['rating'] %}
+<p>{{recipe['rating']}}</p>
+{% endif %}
+<p>{{recipe['timestamp'] | datetimefilter}}</p>
+
 <p>Ingredients</p>
 <ul>
 {% for ingredient in recipe.ingredient_list %}

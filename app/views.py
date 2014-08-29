@@ -4,7 +4,7 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from app import app, db, lm, oid
 from forms import LoginForm, RecipeForm
 from models import User, ROLE_USER, ROLE_ADMIN, Recipe
-from datetime import datetime
+from datetime import datetime, date
 from config import RECIPES_PER_PAGE, RECIPES_PER_HOME_PAGE
 from sqlalchemy import desc
 from scraper import scrape_recipe
@@ -36,7 +36,7 @@ def internal_error(error):
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 @login_required
 def index(page = 1):
-    recent_recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).order_by(desc(Recipe.timestamp))
+    recent_recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=1').order_by(desc(Recipe.timestamp))
     recent_recipes = recent_recipes.paginate(page, RECIPES_PER_HOME_PAGE, False)
     favorite_recipes = Recipe.query.filter('rating=5')
     random_favs = []
@@ -154,20 +154,14 @@ def user(nickname, page = 1):
 @app.route('/add_recipe/',methods = ['GET', 'POST']) 
 @login_required
 def add_recipe():
-    form = RecipeForm(request.form)
+    flash(request.method)
     if request.query_string[:4] == "url=":
-        new_recipe = scrape_recipe(request.query_string[4:])
-        form.recipe_name.data = new_recipe.get_title()
-        form.ingredients.data = new_recipe.get_ingredients()
-        form.directions.data = new_recipe.get_directions()
-        form.url.data = request.query_string[4:]
+       form = fillout_form( request.query_string[4:] )
+    else:
+        form = RecipeForm(request.form)
     if request.method == "POST":
-        recipe = Recipe()
         if form.validate_on_submit():
-            form.populate_obj(recipe)
-            recipe.user_id = 1
-            db.session.add(recipe)
-            db.session.commit()
+            save_recipe( form )
             flash('Your changes have been saved.')
             return redirect(url_for('add_recipe'))
         else:
@@ -239,4 +233,24 @@ def print_recipe(id):
     return render_template('print_recipe.html',
         recipe = recipe)
         
-    
+def fillout_form( url ):
+    #import pdb; pdb.set_trace()
+    new_recipe = scrape_recipe(url)
+    if new_recipe != None:
+        form = RecipeForm(request.form)
+        form.recipe_name.data = new_recipe.get_title()
+        form.ingredients.data = new_recipe.get_ingredients()
+        form.directions.data = new_recipe.get_directions()
+        form.user_id.data = 1
+        form.timestamp.data = date.today()
+        form.url.data = url
+        return form
+    else:
+        return None
+        
+def save_recipe( form ):                
+    recipe=Recipe()
+    form.populate_obj(recipe)
+    recipe.user_id = 1
+    db.session.add(recipe)
+    db.session.commit()

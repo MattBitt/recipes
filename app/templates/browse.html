@@ -4,10 +4,12 @@
 {% block content %}
 <h1>Our Family Recipes</h1>
 {% include 'flash.html' %}
-{{ filters}}
+{% if recipes.pages > 0 %}
 {% for recipe in recipes.items %}
     <p> <a href="{{url_for('view_recipe', id = recipe['id']) }}" > {{ recipe["recipe_name"] }}  </a></p>
 {% endfor %}
+{% endif %}
+
 {% include 'pager.html' %}
 
 {% endblock %}

@@ -27,3 +27,10 @@ if not app.debug:
 
 from app import views, models
 app.jinja_env.globals['momentjs'] = momentjs
+
+@app.template_filter()
+def datetimefilter(value, format='%B %Y'):
+    """convert a datetime to a different format."""
+    return value.strftime(format)
+
+app.jinja_env.filters['datetimefilter'] = datetimefilter
