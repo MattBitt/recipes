@@ -6,7 +6,7 @@ from app.models import User, Recipe
 from config import basedir
 from app import app, db
 from app.scraper import scrape_recipe
-from flask import url_for
+from flask import url_for, session
 
 
 
@@ -23,7 +23,16 @@ def create_recipe():
 def save_recipe( recipe ):
         db.session.add( recipe )
         db.session.commit()
+        
+        
+def create_user():
+    u =  User(name = 'Matt', email='mizzle@gmail.com',password='pass')
+    db.session.add(u)
+    db.session.commit()
+    return u
 
+
+    
 class BaseCase(unittest.TestCase):
     def setUp(self):
         app.config.from_object('config.TestingConfig')
@@ -36,6 +45,7 @@ class BaseCase(unittest.TestCase):
         db.drop_all()
         
 class TestCasa(BaseCase):   
+  
     def test_add_recipe(self):
         r = create_recipe()
         db.session.add(r)
@@ -72,6 +82,14 @@ class TestCasa(BaseCase):
         rv = self.app.get(url_for('view_recipe', id=1))
         self.ctx.pop()
         assert r.recipe_name in rv.data
-        
+    
+    def test_create_user(self):
+        u  = create_user()
+        newuser = User.query.filter('email="mizzle@gmail.com"').first()
+        assert u.name == newuser.name
+        assert u.email == newuser.email
+        assert u.pwdhash == newuser.pwdhash
+    
+  
 if __name__ == '__main__':
     unittest.main()

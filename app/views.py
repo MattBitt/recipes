@@ -1,12 +1,14 @@
-import random
+
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from app import app, db, lm, oid
-from forms import LoginForm, RecipeForm
+from app import app, db, lm
+from forms import SigninForm, RecipeForm, SignupForm
 from models import User, ROLE_USER, ROLE_ADMIN, Recipe
 from datetime import datetime, date
 from sqlalchemy import desc
 from scraper import scrape_recipe
+import random
+import os
 
 @lm.user_loader
 def load_user(id):
@@ -29,22 +31,53 @@ def internal_error(error):
 def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
-
-@app.route('/login', methods = ['GET', 'POST'])
-@oid.loginhandler
-def login():
-    if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        session['remember_me'] = form.remember_me.data
-        return oid.try_login(form.openid.data, ask_for = ['nickname', 'email'])
-    return render_template('login.html', 
+    
+    
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+  form = SignupForm()
+  if request.method == 'POST':
+    if form.validate() == False:
+      return render_template('signup.html', form=form)
+    else:   
+      newuser = User(form.name.data, form.email.data, form.password.data)
+      db.session.add(newuser)
+      db.session.commit()
+      session['email'] = newuser.email
+      return redirect(url_for('index'))
+      
+   
+  elif request.method == 'GET':
+    return render_template('signup.html', form=form)
+    
+    
+    
+@app.route('/signin', methods = ['GET', 'POST'])
+def signin():
+    form = SigninForm()
+    flash(request.method)
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('Invalid username or password')
+            return render_template('signin.html', form=form)
+        else:
+            session['email'] = form.email.data
+            flash("You have successfully signed in")
+            return redirect(url_for('index'))
+    elif request.method == 'GET':
+        return render_template('signin.html', 
         title = 'Sign In',
-        form = form,
-        providers = app.config['OPENID_PROVIDERS'])
+        form = form)
+        
+@app.route('/signout')
+def signout():
+  if 'email' not in session:
+    print "not in session"
+    return redirect(url_for('signin'))
+     
+  session.pop('email', None)
+  return redirect(url_for('index'))
 
-@oid.after_login
 def after_login(resp):
     if resp.email is None or resp.email == "":
         flash('Invalid login. Please try again.')
@@ -72,7 +105,6 @@ def logout():
     
 @app.route('/user/<nickname>')
 @app.route('/user/<nickname>/<int:page>')
-#@login_required
 def user(nickname, page = 1):
     user = User.query.filter_by(nickname = nickname).first()
     if user == None:
@@ -86,11 +118,12 @@ def user(nickname, page = 1):
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index/', methods = ['GET', 'POST'])
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
-
 def index(page = 1):
+    if 'email' not in session:
+        return redirect(url_for('signin'))
     recent_recipes = get_recent_recipes().paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
     favorite_recipes = get_favorite_recipes().paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
-    flash('Loading Recipes')
+    #flash('Loading Recipes')
     return render_template('index.html',
         title = 'Home',
         recent_recipes = recent_recipes,
@@ -103,7 +136,7 @@ def index(page = 1):
 def our_recipes( page=1 ):
     recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=1').order_by(Recipe.recipe_name)
     recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
-    flash('Loading Recipes')
+    #flash('Loading Recipes')
     return render_template('browse.html',
         title = 'Our Recipes',
         recipes = recipes,
@@ -114,9 +147,9 @@ def our_recipes( page=1 ):
 @app.route('/moms_recipes/', methods = ['GET', 'POST'])
 @app.route('/moms_recipes/<int:page>', methods = ['GET', 'POST'])
 def moms_recipes( page=1 ):
-    recipes = Recipe.query.filter('user_id=2').order_by(Recipe.recipe_name)        
+    recipes = Recipe.query.filter('user_id=3').order_by(Recipe.recipe_name)        
     recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
-    flash('Loading Recipes')
+    #flash('Loading Recipes')
     return render_template('browse.html',
         title = 'Moms Recipes',
         recipes = recipes,
@@ -140,14 +173,13 @@ def meal_ideas( page=1 ):
         
 @app.route('/add_recipe/',methods = ['GET', 'POST']) 
 def add_recipe():
-    flash(request.method)
     if request.query_string[:4] == "url=":
        form = fillout_form( request.query_string[4:] )
     else:
         form = RecipeForm(request.form)
     if request.method == "POST":
         if form.validate_on_submit():
-            save_recipe( form )
+            save_new_recipe( form )
             flash('Your changes have been saved.')
             return redirect(url_for('add_recipe'))
         else:
@@ -165,6 +197,8 @@ def edit_recipe(id=1):
         return redirect(url_for('index'))
     if form.validate_on_submit():
         form.populate_obj(recipe)
+        if request.files['image_file'].filename != recipe.image_path:
+            upload_image( recipe )
         db.session.add(recipe)
         db.session.commit()
         flash('Your changes have been saved.')
@@ -232,22 +266,19 @@ def fillout_form( url ):
     else:
         return None
         
-def save_recipe( form ):                
+def save_new_recipe( form ):                
     recipe=Recipe()
     form.populate_obj(recipe)
-    if recipe.image_path != None:
-        ext = request.files['image_file'].filename[-4:]
-        recipe.image_path = str(recipe.recipe_name) + ext
-        request.files['image_file'].save(app.config['UPLOADS_DEFAULT_DEST'] + str(recipe.image_path))
-    recipe.user_id = 1
-    if recipe.timestamp == None:
+    if recipe.image_file != None:
+        recipe.image_path = upload_image(recipe)
+        recipe.user_id = 1
         recipe.timestamp = date.today()
     db.session.add(recipe)
     db.session.commit()
     
 def get_recent_recipes():
     return Recipe.query.filter(
-               Recipe.user_id.in_((1,3))).filter(
+               Recipe.user_id.in_((1,2))).filter(
                'was_cooked=1').order_by(desc(Recipe.timestamp))
                
             
@@ -263,5 +294,14 @@ def get_favorite_recipes():
     for f in random_favs:
         random_fav_ids.append(favorite_recipes[f].id)
     favorite_recipes = Recipe.query.filter(Recipe.id.in_(random_fav_ids))
-    
     return favorite_recipes
+    
+def upload_image( recipe ):
+        if request.files['image_file'].filename != '':
+            fname, ext = os.path.splitext(request.files['image_file'].filename)
+            recipe.image_path = str(recipe.recipe_name) + '.' + ext
+            request.files['image_file'].save(app.config['UPLOADS_DEFAULT_DEST'] + str(recipe.image_path))
+            return recipe.image_path
+         
+    
+    

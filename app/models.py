@@ -1,28 +1,29 @@
 from app import db
 from app import app
+from werkzeug import generate_password_hash, check_password_hash
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    nickname = db.Column(db.String(64), unique = True)
+    name = db.Column(db.String(64), unique = True)
     email = db.Column(db.String(120), index = True, unique = True)
     role = db.Column(db.SmallInteger, default = ROLE_USER)
+    pwdhash = db.Column(db.String(54))
     recipes = db.relationship('Recipe', backref = 'poster', lazy = 'dynamic')
+    
+    def __init__(self, name, email, password):
+        self.name = name.title()
+        self.email = email.lower()
+        self.set_password(password)
+     
+    def set_password(self, password):
+        self.pwdhash = generate_password_hash(password)
+   
+    def check_password(self, password):
+        return check_password_hash(self.pwdhash, password)
 
-    @staticmethod
-    def make_unique_nickname(nickname):
-        if User.query.filter_by(nickname = nickname).first() == None:
-            return nickname
-        version = 2
-        while True:
-            new_nickname = nickname + str(version)
-            if User.query.filter_by(nickname = new_nickname).first() == None:
-                break
-            version += 1
-        return new_nickname
-        
     def is_authenticated(self):
         return True
 
