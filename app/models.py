@@ -1,25 +1,21 @@
 from app import db
 from app import app
 from werkzeug import generate_password_hash, check_password_hash
+#from flask_login import UserMixin
 
-ROLE_USER = 0
-ROLE_ADMIN = 1
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(64), unique = True)
-    email = db.Column(db.String(120), index = True, unique = True)
-    role = db.Column(db.SmallInteger, default = ROLE_USER)
-    pwdhash = db.Column(db.String(54))
+    user = db.Column(db.String(64), unique = True)
+    passw = db.Column(db.String(54))
     recipes = db.relationship('Recipe', backref = 'poster', lazy = 'dynamic')
     
-    def __init__(self, name, email, password):
-        self.name = name.title()
-        self.email = email.lower()
-        self.set_password(password)
+    def __init__(self, user, passw):
+        self.user = user.title()
+        self.set_password(passw)
      
     def set_password(self, password):
-        self.pwdhash = generate_password_hash(password)
+        self.passw = generate_password_hash(password)
    
     def check_password(self, password):
         return check_password_hash(self.pwdhash, password)

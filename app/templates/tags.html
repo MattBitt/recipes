@@ -1,7 +1,0 @@
-{% block content %}
-<ul>
-{% for tag in tag_list %}
-    <li> <a href="{{url_for(url_path, tag_id = tag) }}" > {{ tag }}  </a></li>
-{% endfor %}
-</ul>
-{% endblock %}

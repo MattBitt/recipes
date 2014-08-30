@@ -1,26 +1,13 @@
-
 from flask import render_template, flash, redirect, session, url_for, request, g
-from flask.ext.login import login_user, logout_user, current_user, login_required
+#from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from forms import SigninForm, RecipeForm, SignupForm
-from models import User, ROLE_USER, ROLE_ADMIN, Recipe
+from forms import RecipeForm
+from models import User, Recipe
 from datetime import datetime, date
 from sqlalchemy import desc
 from scraper import scrape_recipe
 import random
 import os
-
-@lm.user_loader
-def load_user(id):
-    return User.query.get(int(id))
-
-@app.before_request
-def before_request():
-    g.user = current_user
-    if g.user.is_authenticated():
-        g.user.last_seen = datetime.utcnow()
-        db.session.add(g.user)
-        db.session.commit()
 
 
 @app.errorhandler(404)
@@ -32,95 +19,11 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
     
-    
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-  form = SignupForm()
-  if request.method == 'POST':
-    if form.validate() == False:
-      return render_template('signup.html', form=form)
-    else:   
-      newuser = User(form.name.data, form.email.data, form.password.data)
-      db.session.add(newuser)
-      db.session.commit()
-      session['email'] = newuser.email
-      return redirect(url_for('index'))
-      
    
-  elif request.method == 'GET':
-    return render_template('signup.html', form=form)
-    
-    
-    
-@app.route('/signin', methods = ['GET', 'POST'])
-def signin():
-    form = SigninForm()
-    flash(request.method)
-    if request.method == 'POST':
-        if form.validate() == False:
-            flash('Invalid username or password')
-            return render_template('signin.html', form=form)
-        else:
-            session['email'] = form.email.data
-            flash("You have successfully signed in")
-            return redirect(url_for('index'))
-    elif request.method == 'GET':
-        return render_template('signin.html', 
-        title = 'Sign In',
-        form = form)
-        
-@app.route('/signout')
-def signout():
-  if 'email' not in session:
-    print "not in session"
-    return redirect(url_for('signin'))
-     
-  session.pop('email', None)
-  return redirect(url_for('index'))
-
-def after_login(resp):
-    if resp.email is None or resp.email == "":
-        flash('Invalid login. Please try again.')
-        redirect(url_for('login'))
-    user = User.query.filter_by(email = resp.email).first()
-    if user is None:
-        nickname = resp.nickname
-        if nickname is None or nickname == "":
-            nickname = resp.email.split('@')[0]
-        user = User(nickname = nickname, email = resp.email, role = ROLE_USER)
-        db.session.add(user)
-        db.session.commit()
-        db.session.commit()
-    remember_me = False
-    if 'remember_me' in session:
-        remember_me = session['remember_me']
-        session.pop('remember_me', None)
-    login_user(user, remember = remember_me)
-    return redirect(request.args.get('next') or url_for('index'))
-
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
-    
-@app.route('/user/<nickname>')
-@app.route('/user/<nickname>/<int:page>')
-def user(nickname, page = 1):
-    user = User.query.filter_by(nickname = nickname).first()
-    if user == None:
-        flash('User ' + nickname + ' not found.')
-        return redirect(url_for('index'))
-    return render_template('user.html',
-        user = user,
-        posts = posts)
-
-
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index/', methods = ['GET', 'POST'])
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 def index(page = 1):
-    if 'email' not in session:
-        return redirect(url_for('signin'))
     recent_recipes = get_recent_recipes().paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
     favorite_recipes = get_favorite_recipes().paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
     #flash('Loading Recipes')
@@ -223,7 +126,7 @@ def view_recipe(id):
         recipe = recipe)
 
 @app.route('/delete_recipe/<int:id>')
-#@login_required
+
 def delete_recipe(id):
     recipe = Recipe.query.filter_by(id = id).first()
     if recipe == None:
@@ -235,7 +138,7 @@ def delete_recipe(id):
     return redirect(url_for('index'))
 
 @app.route('/print_recipe/<id>',methods = ['GET', 'POST']) 
-#@login_required
+
 def print_recipe(id):
     recipe = Recipe.query.filter_by(id = id).first()
     if recipe == None:

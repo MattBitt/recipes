@@ -5,8 +5,6 @@ from BeautifulSoup import BeautifulSoup as BS
 
 class RecipeScraper:
     def __init__(self, url):
-        #self.page = requests.get( url )
-        #self.tree = html.fromstring(self.page.text)
         self.url = url
         self.opener = urllib2.build_opener()
         self.opener.addheaders = [('User-agent', 'Google Chrome')]
