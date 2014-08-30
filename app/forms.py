@@ -7,8 +7,6 @@ from app.models import User, Recipe
 from app import db
 
 
-
-   
 class RecipeForm(Form):
     recipe_name = TextField('recipe_name', validators = [DataRequired()])
     directions = TextAreaField('directions', validators = [Length(min = 0, max = 3000)])
@@ -23,4 +21,6 @@ class RecipeForm(Form):
     timestamp = DateTimeField('timestamp')
     image_file = FileField()
     
-    
+class LoginForm(Form):  
+    user_name = TextField('user_name', validators = [DataRequired()])
+    password = PasswordField()

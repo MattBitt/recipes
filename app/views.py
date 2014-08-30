@@ -1,14 +1,40 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
-#from flask.ext.login import login_user, logout_user, current_user, login_required
-from app import app, db, lm
-from forms import RecipeForm
-from models import User, Recipe
+from flask.ext.login import login_user, logout_user, current_user, login_required
+from app import app, db, login_manager
+from forms import RecipeForm, LoginForm
+from models import User, Recipe, hash_pass
 from datetime import datetime, date
 from sqlalchemy import desc
 from scraper import scrape_recipe
 import random
 import os
 
+@app.route("/logout/")
+def logout_page():
+    """
+    Web Page to Logout User, then Redirect them to Index Page.
+    """
+    logout_user()
+    return redirect("/")
+ 
+@app.route("/login/", methods=["GET", "POST"])
+def login_page():
+    """
+    Web Page to Display Login Form and process form. 
+    """
+    form = LoginForm()
+    if request.method == "POST":
+        user = User.query.filter_by(user_name=request.form['user_name']).first()
+ 
+        #If we found a user based on username then compare that the submitted
+        #password matches the password in the database.  The password is stored
+        #is a slated hash format, so you must hash the password before comparing
+        #it.
+        if user and hash_pass(request.form['password']) == user.password:
+            login_user(user, remember=True)
+            return redirect(request.args.get("next") or "/")        
+ 
+    return render_template("login.html", form=form)
 
 @app.errorhandler(404)
 def internal_error(error):
@@ -24,6 +50,8 @@ def internal_error(error):
 @app.route('/index/', methods = ['GET', 'POST'])
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 def index(page = 1):
+    #user_id = (current_user.get_id() or "No User Logged In")
+    #flash(user_id)
     recent_recipes = get_recent_recipes().paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
     favorite_recipes = get_favorite_recipes().paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
     #flash('Loading Recipes')
@@ -37,6 +65,7 @@ def index(page = 1):
 @app.route('/our_recipes/', methods = ['GET', 'POST'])
 @app.route('/our_recipes/<int:page>', methods = ['GET', 'POST'])
 def our_recipes( page=1 ):
+    #user_id = (current_user.get_id() or "No User Logged In")
     recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=1').order_by(Recipe.recipe_name)
     recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
     #flash('Loading Recipes')
