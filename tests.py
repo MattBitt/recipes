@@ -7,6 +7,7 @@ from config import basedir
 from app import app, db
 from app.scraper import scrape_recipe
 from flask import url_for, session
+from flask.ext.login import current_user, login_user
 
 
 
@@ -26,7 +27,7 @@ def save_recipe( recipe ):
         
         
 def create_user():
-    u =  User(name = 'Matt', email='mizzle@gmail.com',password='pass')
+    u =  User(user_name = 'matt', password='pass')
     db.session.add(u)
     db.session.commit()
     return u
@@ -85,11 +86,11 @@ class TestCasa(BaseCase):
     
     def test_create_user(self):
         u  = create_user()
-        newuser = User.query.filter('email="mizzle@gmail.com"').first()
-        assert u.name == newuser.name
-        assert u.email == newuser.email
-        assert u.pwdhash == newuser.pwdhash
-    
-  
+        assert u != None
+        newuser = User.query.filter('user_name="matt"').first()
+        assert u.user_name == newuser.user_name
+        assert u.password == newuser.password
+
+   
 if __name__ == '__main__':
     unittest.main()

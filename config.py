@@ -1,5 +1,6 @@
 import os
-from datetime import timedelta
+
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
     DEBUG = False
@@ -16,7 +17,7 @@ class Config(object):
 
     UPLOADS_DEFAULT_DEST = 'app/static/pictures/'
     ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg', 'gif'])
-    REMEMBER_COOKIE_DURATION = timedelta(days=14)
+    
  
 class ProductionConfig(Config):
     DATABASE_URI = 'mysql://user@localhost/foo'

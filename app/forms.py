@@ -3,7 +3,7 @@ from wtforms import TextField, BooleanField, TextAreaField, IntegerField, widget
 from wtforms import SubmitField, PasswordField
 from wtforms.validators import DataRequired, Length, URL, Optional, NumberRange, Email
 from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
-from app.models import User, Recipe
+from app.models import Recipe
 from app import db
 
 
@@ -21,6 +21,3 @@ class RecipeForm(Form):
     timestamp = DateTimeField('timestamp')
     image_file = FileField()
     
-class LoginForm(Form):  
-    user_name = TextField('user_name', validators = [DataRequired()])
-    password = PasswordField()
