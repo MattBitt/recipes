@@ -2,16 +2,62 @@
 
 {% block content %}
 {% include 'flash.html' %}
+<div class="row">
+<div class="col-md-2"></div>
+<div class="col-md-4">
+<h1>{{ recipe['recipe_name'] }}</h1>
+{% if recipe['url'] %}
+	<p><a href="{{recipe['url']}}">{{recipe['url']}}</a></p>
+{% endif %}
+{% if recipe['rating'] %}
+	<p>{{recipe['rating']}}</p>
+{% endif %}
+{% if recipe['timestamp'] %}
+	<p>{{recipe['timestamp'] | datetimefilter}}</p>
+{% endif %}
+</div>
+<div class="col-md-1"></div>
+<div class="col-md-4" style="text-align:center">
+<div class="col-md-1"></div>
+{% if recipe['image_path'] %}
+<img class="img-responsive" style="height:auto; width:auto; max-width:400; max-height:400;" src="/static/pictures/{{recipe['image_path']}}">
+
+{% endif %}
+</div>
+</div>
+
+
+
+
+
+<p>Ingredients</p>
+<ul>
+{% for ingredient in recipe.ingredient_list %}
+     {% if ingredient.strip() %}
+    <li> {{ ingredient }}  </li>
+    {% endif %}
+{% endfor %}
+</ul>
+Directions
+<ol>
+{% for direction in recipe.direction_list %}
+    {% if direction.strip() %}
+    <li> {{ direction }}  </li>
+    {% endif %}
+{% endfor %}
+</ol>
+{% if recipe.note_list %}
+Notes
+<ul>
+{% for note in recipe.note_list %}
+    {% if note.strip() %}
+    <li> {{ note }}  </li>
+    {% endif %}
+{% endfor %}
+</ul>
+{% endif %}
 <a href="{{url_for('edit_recipe',id=recipe['id'])}}">Edit</a>
 <a href="{{url_for('print_recipe',id=recipe['id'])}}">Print</a>
-{% if recipe['url'] %} <!--!= "http://" %} -->
-<p><a href="{{recipe['url']}}">{{recipe['url']}}</a></p>
-{% endif %}
-{% if recipe['image_path'] %}
-<img src="/static/pictures/{{ recipe['image_path']}}">
-{% endif %}
-{% include 'recipe.html' %}
-
 <a href="{{url_for('delete_recipe',id=recipe['id'])}}">Delete</a> (This cannot be undone)
 
 {% endblock %}

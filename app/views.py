@@ -28,9 +28,8 @@ def index(page = 1):
     favorite_recipes = get_favorite_recipes().paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
     return render_template('index.html',
         title = 'Home',
-        recent_recipes = recent_recipes,
-        favorite_recipes = favorite_recipes,
-        url_base = 'index'
+        recipes = zip(recent_recipes.items, favorite_recipes.items),
+         url_base = 'index'
         )
 
 @app.route('/our_recipes/', methods = ['GET', 'POST'])

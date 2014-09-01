@@ -4,21 +4,42 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/styles.css" rel="stylesheet">
+    <link href="/static/css/my_css.css" rel="stylesheet">
     
+    <style>
+      body { background: url('/static/img/background.jpg'); }
+      .container { background: #787; min-height: 100% }
+      .my_card { 
+        border:5px solid;
+        height:300px; 
+        padding-bottom:50px;
+        padding-top:50px;
+        background-color: #FDF3E7;
+      }
+      .top-buffer { margin-top:20px; }
+
+   </style>
+    <style type="text/css" >
+    @font-face {
+    font-family: 'MomsDinerMedium';
+    src: url('/static/fonts/momsdiner.eot');
+    src: url('/static/fonts/momsdiner.eot') format('embedded-opentype'),
+         url('/static/fonts/momsdiner.woff2') format('woff2'),
+         url('/static/fonts/momsdiner.woff') format('woff'),
+         url('/static/fonts/momsdiner.ttf') format('truetype'),
+         url('/static/fonts/momsdiner.svg#MomsDinerMedium') format('svg');
+    } 
+    </style>
+
+
+
     {% if title %}
     <title>{{title}} - Family Recipes</title>
     {% else %}
     <title>Family Recipes</title>
     {% endif %}
-    <style>
-      body { background: url('/static/img/background.jpg'); }
-      .container { background: white; min-height: 100% }
 
-      }
-}   
-
-    </style>
   </head>
   <body>
     
@@ -30,8 +51,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="navbar-brand" href="/">Recipes</a>
-            <ul class="nav nav-tabs" role="tablist">
+          <a class="navbar-brand" href="/" font-family:"Times New Roman", Georgia, Serif>Recipes</a>
+            <ul class="nav navbar-nav" role="tablist">
               <li><a href="{{ url_for('index') }}">Home</a></li>
               <li><a href="{{ url_for('our_recipes') }}">Our Recipes</a></li>
               <li><a href="{{ url_for('meal_ideas') }}">Meal Ideas</a></li>
@@ -40,6 +61,7 @@
             </ul>
         </div>
       </div>
+      
       <hr>
              
           {% block content %}{% endblock %}
