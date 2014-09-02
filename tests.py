@@ -13,7 +13,6 @@ from pyquery import PyQuery as pq
 
 
 
-
 def create_recipe():
      return Recipe(recipe_name = "Test Recipe", 
                 ingredients = "2 eggs\nbacon",
@@ -28,7 +27,24 @@ def save_recipe( recipe ):
         db.session.add( recipe )
         db.session.commit()
         
-        
+def create_post_data():
+    return {
+        'ingredients'    :  'ham\n 2lbs bacon\n eggs',
+        'directions'      :  'cook everything\n then eat',
+        'recipe_name' : 'My   Recipe',
+        'url'                   :  'http://www.google.com',
+        'rating'             :  '5',
+        'was_cooked' : '1',
+        'image_path'   : 'app/static/pictures/mypic.jpg',
+        'timestamp'     :  str(date.today())
+    }
+     
+def check_invalid_input( bad_data, field, keyword, rv ):
+        data = create_post_data()
+        data[field] = bad_data
+        q = pq(rv.data)
+        alerttext = q('.help-inline').text()
+        return keyword in alertext       
     
 class BaseCase(unittest.TestCase):
     def setUp(self):
@@ -40,8 +56,7 @@ class BaseCase(unittest.TestCase):
 
     def tearDown(self):
         db.session.remove()
-       
-        
+
 class TestCase(BaseCase):   
   
     #def test_add_recipe(self):
@@ -52,7 +67,7 @@ class TestCase(BaseCase):
         # assert recipes[0].id == 1
         # assert recipes[0].ingredients == "2 eggs\nbacon"
         # assert recipes[0].recipe_name == "Test Recipe"
- 
+
  
     def test_edit_recipe(self):
         r = create_recipe()
@@ -95,35 +110,26 @@ class TestCase(BaseCase):
         q = pq(rv.data)
         alerttext = q('.help-inline').text()
         assert 'Recipe Name' in alerttext
-       
+        assert 'Ingredients' in alerttext
+        assert 'Directions' in alerttext
         
         # Now submitting with "real" data should not produce errors
         #    and should result in new database entries
-        data = {
-            'ingredients'    :  'ham\n 2lbs bacon\n eggs',
-            'directions'      :  'cook everything\n then eat',
-            'recipe_name' : 'My   Recipe',
-            'url'                   :  'http://www.google.com',
-            'rating'             :  '5',
-            'was_cooked' : '1'
-        }
+        data = create_post_data()   
         
         rv = self.app.post('/add_recipe/', data=data)
+        assert 'Invalid data' not in rv.data
+        #assert 'changes have been saved' in rv.data
         self.assertEqual(rv.status_code, 302)       # On success we redirect
- 
-        # Check that database entries were created
-        # u = User.query.filter_by(email=data['email']).all()
-        # self.assertEqual(len(u), 1, 'Incorrect number of users created')
-        # self.assertEqual(u.givenname, data['givenname'])
         
-        # o = Organization.query.filter_by(name='My Test Organization').all()
+        r = Recipe.query.filter_by(recipe_name = data['recipe_name']).all()
+        app.logger.info(r)
+        self.assertEqual(len(r), 1, 'Incorrect number of recipes created')
+        self.assertEqual(r[0].directions, data['directions'])
+        self.assertEqual(r[0].timestamp, date.today())
         
-        # self.assertEqual(len(o), 1, 'Incorrect number of organizations created')
-        
-        # ou = OrganizationUsers.query.filter_by(organization_id=o[0].id, user_id=u[0].id, role='owner').all()
-        
-        # self.assertEqual(len(ou), 1, 'Incorrect number of organization user records created')
-    
+        rv = self.app.post('/add_recipe/', data=data)
+        assert check_invalid_input('www.google.com','url','URL', rv.data) == False
 
 
 if __name__ == '__main__':

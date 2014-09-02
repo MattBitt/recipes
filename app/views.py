@@ -82,19 +82,14 @@ def add_recipe():
     else:
         form = RecipeForm(request.form)
     if request.method == "POST":
-        app.logger.info('in post if statement')
         if form.validate_on_submit():
-            app.logger.info('form validated')
             save_new_recipe( form )
             flash('Your changes have been saved.')
             return redirect(url_for('add_recipe'))
         else:
-            app.logger.info('form not validated')
-            
+            flash('Invalid data')
             return render_template('add_recipe.html',form = form)
     elif request.method != "POST":
-        app.logger.info('in not post if statement')
-
         return render_template('add_recipe.html',form = form)
     return redirect(url_for('add_recipe'))
 
@@ -188,8 +183,8 @@ def save_new_recipe( form ):
             os.remove(app.config['UPLOADS_DEFAULT_DEST'] + str(recipe.image_path))
             flash("Error uploading image")
 
-        recipe.user_id = 1
-        recipe.timestamp = date.today()
+    recipe.user_id = 1
+    recipe.timestamp = date.today()
     db.session.add(recipe)
     db.session.commit()
     

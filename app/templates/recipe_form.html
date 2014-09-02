@@ -81,6 +81,15 @@
                 {% endfor %}
              </div>
         </div>
+    <div class="control-group{% if form.errors.timestamp %} error{% endif %}" style="display:none">
+            <label class="control-label" for="timestamp">Recipe Name:</label>
+            <div class="controls">
+                {{ form.timestamp(maxlength =128, class = "span4") }}
+                {% for error in form.errors.timestamp %}
+                    <span class="help-inline">[{{error}}]</span><br>
+                {% endfor %}
+            </div>
+        </div
         <div class="control-group">
             <div class="controls">
                 <input class="btn btn-primary" type="submit" value="Save Changes">
