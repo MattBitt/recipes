@@ -7,6 +7,7 @@ from sqlalchemy import desc
 from scraper import scrape_recipe
 import random
 import os
+from image_functions import resize_picture
 
 
 @app.errorhandler(404)
@@ -97,8 +98,10 @@ def edit_recipe(id=1):
         return redirect(url_for('index'))
     if form.validate_on_submit():
         form.populate_obj(recipe)
-        if request.files['image_file'].filename != recipe.image_path:
-            upload_image( recipe )
+        if request.files['image_file'].filename != recipe.image_path and request.files['image_file'].filename != '':
+            import pdb; pdb.set_trace()
+            if upload_image( recipe ) is None:
+                flash("Error uploading image")
         db.session.add(recipe)
         db.session.commit()
         flash('Your changes have been saved.')
@@ -171,6 +174,11 @@ def save_new_recipe( form ):
     form.populate_obj(recipe)
     if recipe.image_file != None:
         recipe.image_path = upload_image(recipe)
+        #import pdb; pdb.set_trace()
+        if recipe.image_path is None:
+            os.remove(app.config['UPLOADS_DEFAULT_DEST'] + str(recipe.image_path))
+            flash("Error uploading image")
+
         recipe.user_id = 1
         recipe.timestamp = date.today()
     db.session.add(recipe)
@@ -199,9 +207,17 @@ def get_favorite_recipes():
 def upload_image( recipe ):
         if request.files['image_file'].filename != '':
             fname, ext = os.path.splitext(request.files['image_file'].filename)
-            recipe.image_path = str(recipe.recipe_name) + '.' + ext
-            request.files['image_file'].save(app.config['UPLOADS_DEFAULT_DEST'] + str(recipe.image_path))
-            return recipe.image_path
+            temp_path = os.path.join(app.config['UPLOADS_DEFAULT_DEST'], app.config['TEMP_FILE'])
+            recipe.image_path = str(recipe.recipe_name) + ext
+            request.files['image_file'].save(temp_path)
+            r = resize_picture(app.config['UPLOADS_DEFAULT_DEST'], 
+                    app.config['TEMP_FILE'], 
+                    str(recipe.image_path), 
+                    (app.config['IMAGE_SIZE']))
+            if r:
+                return recipe.image_path
+            else:
+                return None
          
     
     

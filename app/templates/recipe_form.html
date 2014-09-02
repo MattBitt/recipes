@@ -45,7 +45,7 @@
                 {% endfor %}
             </div>
         </div>
-         <div class="control-group{% if form.errors.image_path %} error{% endif %}">
+         <div class="control-group{% if form.errors.image_path %} error{% endif %}" style="display:none">
             <label class="control-label" for="image_path">Image Path:</label>
             <div class="controls">
                 {{ form.image_path(maxlength =128, class = "span4") }}
@@ -73,7 +73,7 @@
              </div>
         </div>
  <div class="control-group{% if form.errors.image_file %} error{% endif %}">
-            <label class="control-label" for="image_file">Cooked?:</label>
+            <label class="control-label" for="image_file">Image Path:</label>
             <div class="controls">
                 {{ form.image_file(maxlength =128, class = "span4") }}
                 {% for error in form.errors.image_file %}

@@ -1,18 +1,20 @@
 from PIL import Image
 import os
 
-def resize_picture(pic_path, pic_name, pic_size):
+def resize_picture(pic_path, temp_name, pic_name, pic_size):
+    temp_name = os.path.join(pic_path, temp_name)
     pname = os.path.join(pic_path, pic_name)
     
     if not os.path.isfile(pname):
         return None
     else:
         try:
-            i = Image.open( pname )
+            i = Image.open( temp_name )
             i = i.resize( pic_size, Image.ANTIALIAS)
             i.save( pname )
             return 1
         except:
+            print "Image function returning none"
             return None
 
         

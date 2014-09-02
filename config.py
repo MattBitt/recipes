@@ -16,6 +16,8 @@ class Config(object):
     RECIPES_PER_HOME_PAGE = 5
 
     UPLOADS_DEFAULT_DEST = 'app/static/pictures/'
+    TEMP_FILE = 'temp.jpg'
+    IMAGE_SIZE = (640,480)
     ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg', 'gif'])
     
  
