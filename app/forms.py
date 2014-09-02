@@ -8,7 +8,7 @@ from app import db
 
 
 class RecipeForm(Form):
-    recipe_name = TextField('recipe_name', validators = [DataRequired()])
+    recipe_name = TextField('recipe_name' , validators = [DataRequired( message='Recipe Name is required')])
     directions = TextAreaField('directions', validators = [Length(min = 0, max = 3000)])
     ingredients = TextAreaField('ingredients', validators = [Length(min = 0, max = 3000)])
     notes = TextAreaField('notes', validators = [Length(min = 0, max = 3000)])
@@ -19,5 +19,5 @@ class RecipeForm(Form):
     rating = IntegerField('rating', validators = [NumberRange(min=1, max=5, message="Rating must be between 1 and 5"), Optional()])
     user_id = IntegerField('user_id')
     timestamp = DateTimeField('timestamp')
-    image_file = FileField()
+    image_file = FileField('image_file')
     

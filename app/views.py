@@ -74,18 +74,27 @@ def meal_ideas( page=1 ):
         
 @app.route('/add_recipe/',methods = ['GET', 'POST']) 
 def add_recipe():
+    #import pdb; pdb.set_trace()
+    #app.logger.info("in add_recipe")
+    #app.logger.info(request.args)
     if request.query_string[:4] == "url=":
        form = fillout_form( request.query_string[4:] )
     else:
         form = RecipeForm(request.form)
     if request.method == "POST":
+        app.logger.info('in post if statement')
         if form.validate_on_submit():
+            app.logger.info('form validated')
             save_new_recipe( form )
             flash('Your changes have been saved.')
             return redirect(url_for('add_recipe'))
         else:
+            app.logger.info('form not validated')
+            
             return render_template('add_recipe.html',form = form)
     elif request.method != "POST":
+        app.logger.info('in not post if statement')
+
         return render_template('add_recipe.html',form = form)
     return redirect(url_for('add_recipe'))
 
@@ -99,7 +108,7 @@ def edit_recipe(id=1):
     if form.validate_on_submit():
         form.populate_obj(recipe)
         if request.files['image_file'].filename != recipe.image_path and request.files['image_file'].filename != '':
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             if upload_image( recipe ) is None:
                 flash("Error uploading image")
         db.session.add(recipe)
@@ -172,9 +181,9 @@ def fillout_form( url ):
 def save_new_recipe( form ):                
     recipe=Recipe()
     form.populate_obj(recipe)
-    if recipe.image_file != None:
+    #import pdb; pdb.set_trace()
+    if recipe.image_file != '':
         recipe.image_path = upload_image(recipe)
-        #import pdb; pdb.set_trace()
         if recipe.image_path is None:
             os.remove(app.config['UPLOADS_DEFAULT_DEST'] + str(recipe.image_path))
             flash("Error uploading image")

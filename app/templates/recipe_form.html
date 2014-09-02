@@ -3,7 +3,7 @@
         <div class="control-group{% if form.errors.recipe_name %} error{% endif %}">
             <label class="control-label" for="recipe_name">Recipe Name:</label>
             <div class="controls">
-                {{ form.recipe_name(maxlength = 64, class = "span4") }}
+                {{ form.recipe_name(maxlength =128, class = "span4") }}
                 {% for error in form.errors.recipe_name %}
                     <span class="help-inline">[{{error}}]</span><br>
                 {% endfor %}
