@@ -75,15 +75,16 @@ def meal_ideas( page=1 ):
 @app.route('/add_recipe/',methods = ['GET', 'POST']) 
 def add_recipe():
     #import pdb; pdb.set_trace()
-    app.logger.info("Adding a new Recipe")
+   
     #app.logger.info(request.args)
     if request.query_string[:4] == "url=":
-       app.logger.info("From Source:  " + request.query_string[:4])
+       app.logger.info("Adding from source:  " + request.query_string[:4])
        form = fillout_form( request.query_string[4:] )
     else:
         form = RecipeForm(request.form)
     if request.method == "POST":
         if form.validate_on_submit():
+            app.logger.info("Adding a new Recipe")
             save_new_recipe( form )
             flash('Your changes have been saved.')
             return redirect(url_for('add_recipe'))
@@ -98,25 +99,26 @@ def add_recipe():
 def edit_recipe(id=1):
     recipe = Recipe.query.filter_by(id = id).first()
     app.logger.info('Editing Recipe ' + str(id))
-    app.logger.info('Request method = ' + str(request.method))
-    if request.method == 'POST':
-        app.logger.info('Recipe Name = ' + str(request.values['recipe_name']))
-        #import pdb; pdb.set_trace()
-        #pass
     form = RecipeForm(obj = recipe)
     if recipe == None:
         flash('Recipe not found.')
         return redirect(url_for('index'))
-    if form.validate_on_submit():
-        form.populate_obj(recipe)
-        if request.files['image_file'].filename != recipe.image_path and request.files['image_file'].filename != '':
-            
-            if upload_image( recipe ) is None:
-                flash("Error uploading image")
-        db.session.add(recipe)
-        db.session.commit()
-        flash('Your changes have been saved.')
-        return redirect(url_for('view_recipe', id=id))
+    if request.method == 'POST':
+        app.logger.info('Method = POST')
+        if form.validate_on_submit():
+            app.logger.info('Validation Successful - ' + str(request))
+            form.populate_obj(recipe)
+            #if request.files['image_file'].filename != recipe.image_path and request.files['image_file'].filename != '':
+            #    if upload_image( recipe ) is None:
+            #        flash("Error uploading image")
+            recipe.recipe_name = request.values['recipe_name']
+            db.session.add(recipe)
+            db.session.commit()
+            flash('Your changes have been saved.')
+            return redirect(url_for('view_recipe', id=id))
+        else:
+            app.logger.info("Failed Validation")
+            import pdb; pdb.set_trace()        
     return render_template('edit_recipe.html',
         form = form)
 
@@ -137,7 +139,6 @@ def view_recipe(id):
         recipe = recipe)
 
 @app.route('/delete_recipe/<int:id>')
-
 def delete_recipe(id):
     recipe = Recipe.query.filter_by(id = id).first()
     if recipe == None:

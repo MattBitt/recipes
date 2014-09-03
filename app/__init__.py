@@ -22,9 +22,10 @@ if app.debug:
     import logging
     from logging.handlers import RotatingFileHandler
     file_handler = RotatingFileHandler('tmp/recipe.log', 'a', 1 * 1024 * 1024, 10)
-    file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(filename)s:%(lineno)d]'))
-    app.logger.setLevel(logging.INFO)
-    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(filename)s:%(lineno)d] [%(funcName)s function]'))
+    log_level = logging.DEBUG
+    app.logger.setLevel(log_level)
+    file_handler.setLevel(log_level)
     app.logger.addHandler(file_handler)
     app.logger.info('Starting Recipes')
 

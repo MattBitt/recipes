@@ -5,6 +5,7 @@ from app.forms import RecipeForm
 from app.models import Recipe
 from app import app, db
 from db_tests import create_recipe
+from flask import url_for, g
 
 def create_post_data():
     return {
@@ -30,6 +31,7 @@ def check_invalid_input( bad_data, field, keyword, rv ):
 
 class FormTests(BaseTest):
     def test_add_recipe(self):
+        app.logger.debug('Add recipe test')
         rv = self.app.get('/add_recipe/')
         self.assertEqual(rv.status_code, 200)
         data = {}
@@ -54,24 +56,9 @@ class FormTests(BaseTest):
         self.assertEqual(r[0].directions, data['directions'])
         self.assertEqual(r[0].timestamp, date.today())
     
-    def test_edit_recipe(self):
-        recs = Recipe.query.all()
-        assert recs[0].id == 1
-        rv = self.app.get('/edit_recipe/3')
-        self.assertEqual(rv.status_code, 302)
-        rv = self.app.get('/edit_recipe/1')
-        self.assertEqual(rv.status_code, 200)
-        
-            
-        #rv = self.app.post('/edit_recipe/1', data = create_post_data())
-        #self.ctx.push()
-        #import pdb; pdb.set_trace()
-        #self.ctx.pop()
-        
-        
-        
 
     def test_invalid_urls(self):
+        app.logger.debug('Invalid URL Test')
         # Currently will validate following URL's
         # 'ttp://asdf.com']#
         

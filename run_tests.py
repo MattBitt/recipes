@@ -28,10 +28,10 @@ from scraper_tests import ScraperTests
  
 def suite(add_slow = False):
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(FormTests))
     suite.addTest(unittest.makeSuite(DB_Tests))
     if add_slow:
         suite.addTest(unittest.makeSuite(ScraperTests))
+    suite.addTest(unittest.makeSuite(FormTests))
     return suite
     
  
