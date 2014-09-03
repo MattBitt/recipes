@@ -1,7 +1,9 @@
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '../'))
 import unittest
 from datetime import datetime, timedelta, date
-from app.models import User, Recipe
+from app.models import Recipe
 from config import basedir
 from app import app, db
 from app.scraper import scrape_recipe
