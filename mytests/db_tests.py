@@ -1,18 +1,10 @@
-#!flask/bin/python
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '../'))
-
-import unittest
-from datetime import datetime, timedelta, date
-from app.models import Recipe
-from config import basedir
-from app import app, db
-from app.scraper import scrape_recipe
-from flask import url_for, session
-from app.forms import RecipeForm
+from base_test import BaseTest
 from pyquery import PyQuery as pq
-
+from datetime import datetime, timedelta, date
+from app.forms import RecipeForm
+from app.models import Recipe
+from app import app, db
+from flask import render_template, flash, redirect, session, url_for, request, g
 
 
 def create_recipe():
@@ -32,13 +24,16 @@ def save_recipe( recipe ):
    
     
 
-class TestCase(BaseTest):   
-  
-
-    def test_edit_recipe(self):
+class DB_Tests(BaseTest):   
+    def test_add_recipe(self):
         r = create_recipe()
         db.session.add(r)
         db.session.commit()
+        recs = Recipe.query.all()
+        assert recs[0].id == 1
+
+    def test_edit_recipe(self):
+        r = Recipe.query.filter('id=1').first()
         r.ingredients = "4 eggs\nbacon\hasbrowns"
         db.session.add(r)
         db.session.commit()
@@ -48,23 +43,18 @@ class TestCase(BaseTest):
         assert recipes[0].recipe_name == "Test Recipe"
  
     def test_invalid_date(self):
-        r = create_recipe()
-        save_recipe(r)
         rec = Recipe.query.filter('id=1').first()
         self.ctx.push()
         rv = self.app.get(url_for('view_recipe', id=1))
         self.ctx.pop()
-        assert r.recipe_name in rv.data
-        r.timestamp = None
-        save_recipe(r)
+        assert rec.recipe_name in rv.data
+        rec.timestamp = None
+        save_recipe(rec)
         self.ctx.push()
         rv = self.app.get(url_for('view_recipe', id=1))
+        assert rec.recipe_name in rv.data
         self.ctx.pop()
-        assert r.recipe_name in rv.data
-    
 
 
 if __name__ == '__main__':
     unittest.main()
-
-    

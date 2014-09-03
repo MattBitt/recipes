@@ -1,17 +1,8 @@
-import os
-import sys
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '../'))
-import unittest
-from datetime import datetime, timedelta, date
-from app.models import Recipe
-from config import basedir
-from app import app, db
+from base_test import BaseTest
 from app.scraper import scrape_recipe
-from flask import url_for
-from tests   import BaseCase
 
 
-class SlowTests(BaseCase):
+class ScraperTests(BaseTest):
     def test_scrape_all_recipes(self):
         url = "http://allrecipes.com/Recipe/Grilled-Salmon-I/Detail.aspx?soid=carousel_0_rotd&prop24=rotd"
         rec = scrape_recipe( url )

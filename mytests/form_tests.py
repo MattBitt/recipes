@@ -1,10 +1,16 @@
 from base_test import BaseTest
+from pyquery import PyQuery as pq
+from datetime import datetime, timedelta, date
+from app.forms import RecipeForm
+from app.models import Recipe
+from app import app, db
+from db_tests import create_recipe
 
 def create_post_data():
     return {
         'ingredients'    :  'ham\n 2lbs bacon\n eggs',
         'directions'      :  'cook everything\n then eat',
-        'recipe_name' : 'My   Recipe',
+        'recipe_name' : 'My  Recipe',
         'url'                   :  'http://www.google.com',
         'rating'             :  '5',
         'was_cooked' : '1',
@@ -17,11 +23,12 @@ def check_invalid_input( bad_data, field, keyword, rv ):
         data[field] = bad_data
         q = pq(rv)
         alerttext = q('.help-inline').text()
+        print alerttext
         return keyword in alerttext    
 
 
 
-class FormTest(BaseTest):
+class FormTests(BaseTest):
     def test_add_recipe(self):
         rv = self.app.get('/add_recipe/')
         self.assertEqual(rv.status_code, 200)
@@ -42,12 +49,31 @@ class FormTest(BaseTest):
         self.assertEqual(rv.status_code, 302)       # On success we redirect
         
         r = Recipe.query.filter_by(recipe_name = data['recipe_name']).all()
-        app.logger.info(r)
+        #app.logger.info(r)
         self.assertEqual(len(r), 1, 'Incorrect number of recipes created')
         self.assertEqual(r[0].directions, data['directions'])
         self.assertEqual(r[0].timestamp, date.today())
+    
+    def test_edit_recipe(self):
+        recs = Recipe.query.all()
+        assert recs[0].id == 1
+        rv = self.app.get('/edit_recipe/3')
+        self.assertEqual(rv.status_code, 302)
+        rv = self.app.get('/edit_recipe/1')
+        self.assertEqual(rv.status_code, 200)
         
-        rv = self.app.post('/add_recipe/', data=data)
-        bad_urls = ['www.google.com', 'ttp://asdf.com', 'http://www.yahoo.com']
+        
+
+    def test_invalid_urls(self):
+        # Currently will validate following URL's
+        # 'ttp://asdf.com']#
+        
+        bad_urls = ['www.google', 'matt']
+        
         for b in bad_urls:
-            assert check_invalid_input(b,'url','URL', rv.data) == False
+            data = create_post_data()
+            data['url'] = b
+            rv = self.app.post('/add_recipe/', data=data)
+            q = pq(rv.data)
+            alerttext = q('.help-inline').text()
+            assert 'URL' in alerttext

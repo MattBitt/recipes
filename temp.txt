@@ -1,0 +1,4 @@
+C:\Users\mbittinger\Documents\flask\recipes\mytests
+> c:\users\mbittinger\documents\flask\recipes\run_tests.py(41)<module>()
+-> if len(sys.argv) > 1:
+(Pdb) 

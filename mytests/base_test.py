@@ -8,12 +8,16 @@ from app import app, db
 #    a database setup for them before the tests begin
 class BaseTest(unittest.TestCase):
     @classmethod
-    def setUp(self):
+    def setUpClass(self):
         app.config.from_object('config.TestingConfig')
         self.app = app.test_client()
         db.drop_all()
         db.create_all()
         self.ctx = app.test_request_context()
+    
     @classmethod
-    def tearDown(self):
+    def tearDownClass(self):
         db.session.remove()
+    
+    def setUp(self):
+        self.app = app.test_client()
