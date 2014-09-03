@@ -44,7 +44,9 @@ if __name__ == '__main__':
         print "Not all tests are being run.  Please append 'a' to the command to run every test"
         test_suite = suite(False)
     try:
+        app.logger.info('Starting Test Suite')
         runner.run(test_suite)
+        app.logger.info('Finished Testing')
  
     except:
         pass

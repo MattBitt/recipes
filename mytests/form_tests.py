@@ -62,6 +62,13 @@ class FormTests(BaseTest):
         rv = self.app.get('/edit_recipe/1')
         self.assertEqual(rv.status_code, 200)
         
+            
+        #rv = self.app.post('/edit_recipe/1', data = create_post_data())
+        #self.ctx.push()
+        #import pdb; pdb.set_trace()
+        #self.ctx.pop()
+        
+        
         
 
     def test_invalid_urls(self):
