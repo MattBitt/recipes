@@ -104,14 +104,16 @@ def edit_recipe(id=1):
         flash('Recipe not found.')
         return redirect(url_for('index'))
     if request.method == 'POST':
+        app.logger.info('request.data')
+        app.logger.info(request.data)
         app.logger.info('Method = POST')
-        if form.validate_on_submit():
-            app.logger.info('Validation Successful - ' + str(request))
+        valid = form.validate_on_submit()
+        if valid:
+            app.logger.info('Validation Successful - ' + str(form.recipe_name.data))
             form.populate_obj(recipe)
             #if request.files['image_file'].filename != recipe.image_path and request.files['image_file'].filename != '':
-            #    if upload_image( recipe ) is None:
+            #   if upload_image( recipe ) is None:
             #        flash("Error uploading image")
-            recipe.recipe_name = request.values['recipe_name']
             db.session.add(recipe)
             db.session.commit()
             flash('Your changes have been saved.')

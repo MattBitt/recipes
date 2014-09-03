@@ -10,6 +10,7 @@ class Config(object):
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
     WTF_CSRF_ENABLED = True
+    CSRF_ENABLED = True
     SECRET_KEY = '%@#$%$^@ASDF'
 
     RECIPES_PER_PAGE = 10
@@ -31,4 +32,5 @@ class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'tests.db') #'sqlite:///:memory:'
     DEBUG = False
     WTF_CSRF_ENABLED = False
+    CSRF_ENABLED = False
 

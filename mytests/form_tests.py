@@ -56,14 +56,25 @@ class FormTests(BaseTest):
         self.assertEqual(r[0].directions, data['directions'])
         self.assertEqual(r[0].timestamp, date.today())
     
-
+    
+    
+    def test_edit_form(self):
+        app.logger.debug('Edit form test')
+        data = create_post_data()
+        data['recipe_name'] = "Hope this works"
+        rv = self.app.post('/edit_recipe/1', data=data, environ_base={
+                'HTTP_USER_AGENT': 'Chrome',
+                'REMOTE_ADDR': '127.0.0.1'})
+        app.logger.info('Response:  ' + str(rv.status_code))
+        r = Recipe.query.filter('id=1').first()
+        assert rv.status_code == 302
+        assert r.recipe_name == data['recipe_name']
+        
     def test_invalid_urls(self):
         app.logger.debug('Invalid URL Test')
         # Currently will validate following URL's
         # 'ttp://asdf.com']#
-        
         bad_urls = ['www.google', 'matt']
-        
         for b in bad_urls:
             data = create_post_data()
             data['url'] = b
