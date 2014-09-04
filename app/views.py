@@ -74,20 +74,33 @@ def meal_ideas( page=1 ):
         
 @app.route('/add_recipe/',methods = ['GET', 'POST']) 
 def add_recipe():
-    #import pdb; pdb.set_trace()
-   
-    #app.logger.info(request.args)
     if request.query_string[:4] == "url=":
-       app.logger.info("Adding from source:  " + request.query_string[:4])
+       app.logger.info("Adding from source:  " + request.query_string[4:])
        form = fillout_form( request.query_string[4:] )
     else:
         form = RecipeForm(request.form)
     if request.method == "POST":
         if form.validate_on_submit():
             app.logger.info("Adding a new Recipe")
-            save_new_recipe( form )
-            flash('Your changes have been saved.')
-            return redirect(url_for('add_recipe'))
+            recipe=Recipe()
+            form.populate_obj(recipe)
+            import pdb; pdb.set_trace()
+            if request.files['image_file'].filename != '':
+                app.logger.debug("Image uploaded")
+                req = request
+                filename = req.files['image_file'].filename
+                recipe_name = recipe.recipe_name
+                recipe.image_path = upload_image(req, filename, recipe_name)
+                if recipe.image_path is None:
+                    flash("Error uploading image")
+            recipe.user_id = 1
+            recipe.timestamp = date.today()
+            db.session.add(recipe)
+            db.session.commit()
+            
+            new_rec = Recipe.query.filter(Recipe.recipe_name==  str(recipe.recipe_name)).first()
+            #import pdb; pdb.set_trace()
+            return redirect(url_for('view_recipe', id=new_rec.id))
         else:
             flash('Invalid data')
             return render_template('add_recipe.html',form = form)
@@ -182,28 +195,12 @@ def fillout_form( url ):
         return form
     else:
         return None
-        
-def save_new_recipe( form ):                
-    recipe=Recipe()
-    form.populate_obj(recipe)
-    #import pdb; pdb.set_trace()
-    if recipe.image_file != '':
-        recipe.image_path = upload_image(recipe)
-        if recipe.image_path is None:
-            os.remove(app.config['UPLOADS_DEFAULT_DEST'] + str(recipe.image_path))
-            flash("Error uploading image")
 
-    recipe.user_id = 1
-    recipe.timestamp = date.today()
-    db.session.add(recipe)
-    db.session.commit()
-    
 def get_recent_recipes():
     return Recipe.query.filter(
                Recipe.user_id.in_((1,2))).filter(
                'was_cooked=1').order_by(desc(Recipe.timestamp))
-               
-            
+
         
 def get_favorite_recipes():        
     favorite_recipes = Recipe.query.filter('rating=5')
@@ -218,20 +215,25 @@ def get_favorite_recipes():
     favorite_recipes = Recipe.query.filter(Recipe.id.in_(random_fav_ids))
     return favorite_recipes
     
-def upload_image( recipe ):
-        if request.files['image_file'].filename != '':
-            fname, ext = os.path.splitext(request.files['image_file'].filename)
-            temp_path = os.path.join(app.config['UPLOADS_DEFAULT_DEST'], app.config['TEMP_FILE'])
-            recipe.image_path = str(recipe.recipe_name) + ext
-            request.files['image_file'].save(temp_path)
-            r = resize_picture(app.config['UPLOADS_DEFAULT_DEST'], 
-                    app.config['TEMP_FILE'], 
-                    str(recipe.image_path), 
-                    (app.config['IMAGE_SIZE']))
-            if r:
-                return recipe.image_path
-            else:
-                return None
+def upload_image( req, filename, recipe_name ):
+        """
+        Check for empty filename before calling this function.
+        
+        """
+        dest_path = app.config['UPLOADS_DEFAULT_DEST']
+        temp_file = app.config['TEMP_FILE']
+        fname, ext = os.path.splitext(filename)
+        temp_path = os.path.join(dest_path, temp_file)
+        req.files['image_file'].save(temp_path)
+        resized_pic = resize_picture(dest_path, 
+                temp_file, 
+                str(recipe_name) + ext,
+                (app.config['IMAGE_SIZE']))
+        if resized_pic:
+            return str(recipe_name) + ext
+        else:
+            os.remove(os.path.join(dest_path, temp_file))
+            return None
          
     
     

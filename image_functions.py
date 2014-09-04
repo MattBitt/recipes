@@ -1,11 +1,12 @@
 from PIL import Image
 import os
+from app import app
 
 def resize_picture(pic_path, temp_name, pic_name, pic_size):
     temp_name = os.path.join(pic_path, temp_name)
     pname = os.path.join(pic_path, pic_name)
     
-    if not os.path.isfile(pname):
+    if not os.path.isfile(temp_name):
         return None
     else:
         try:
@@ -14,7 +15,7 @@ def resize_picture(pic_path, temp_name, pic_name, pic_size):
             i.save( pname )
             return 1
         except:
-            print "Image function returning none"
+            app.logger.error('Error resizing picture')
             return None
 
         

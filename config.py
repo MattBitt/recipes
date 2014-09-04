@@ -33,4 +33,5 @@ class TestingConfig(Config):
     DEBUG = False
     WTF_CSRF_ENABLED = False
     CSRF_ENABLED = False
+    UPLOADS_DEFAULT_DEST = 'app/static/temp_uploads/'
 
