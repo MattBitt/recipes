@@ -1,95 +1,37 @@
+{% macro with_errors(field) %}
+
+    <div class="control-group">
+    {% if field.name != 'image_path' %}
+    <label class="control-label" for='{{field}}'>{{field.label.text + ':'}}</label>
+    {% endif %}    
+        <div class="controls">
+    {% if field.errors %}
+        {% set css_class = 'control-group error' %}
+        {{ field(class=css_class, **kwargs) }}
+        <span class="help-inline">{% for error in field.errors %}<li>{{ error|e }}</li>{% endfor %}</ul>
+    {% else %}
+        {{ field(**kwargs) }}
+    {% endif %}
+        </div>
+    </div>
+    
+{% endmacro %}
+
+
+
    <form class="form-horizontal" action="" method="post" name="add_recipe" enctype="multipart/form-data">
-        {{form.hidden_tag()}}
-        <div class="control-group{% if form.errors.recipe_name %} error{% endif %}">
-            <label class="control-label" for="recipe_name">Recipe Name:</label>
-            <div class="controls">
-                {{ form.recipe_name(maxlength =128, class = "span4") }}
-                {% for error in form.errors.recipe_name %}
-                    <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="control-group{% if form.errors.ingredients %} error{% endif %}">
-            <label class="control-label" for="ingredients">Ingredients:</label>
-            <div class="controls">
-                {{ form.ingredients(cols = 80, rows = 8, class = "span4") }}
-                {% for error in form.errors.ingredients %}
-                    <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="control-group{% if form.errors.directions %} error{% endif %}">
-            <label class="control-label" for="directions">Directions:</label>
-            <div class="controls">
-                {{ form.directions(cols = 80, rows = 8, class = "span4") }}
-                {% for error in form.errors.directions %}
-                    <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-            </div>
-        </div>
-         <div class="control-group{% if form.errors.notes %} error{% endif %}">
-            <label class="control-label" for="notes">Notes:</label>
-            <div class="controls">
-                {{ form.notes(cols = 64, rows = 4, class = "span4") }}
-                {% for error in form.errors.notes %}
-                    <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="control-group{% if form.errors.url %} error{% endif %}">
-            <label class="control-label" for="url">Recipe URL:</label>
-            <div class="controls">
-                {{ form.url(maxlength =128, class = "span4") }}
-                {% for error in form.errors.url %}
-                    <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-            </div>
-        </div>
-         <div class="control-group{% if form.errors.image_path %} error{% endif %}" style="display:none">
-            <label class="control-label" for="image_path">Image Path:</label>
-            <div class="controls">
-                {{ form.image_path(maxlength =128, class = "span4") }}
-                {% for error in form.errors.image_path %}
-                    <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-             </div>
-        </div>
-        <div class="control-group{% if form.errors.Rating %} error{% endif %}">
-            <label class="control-label" for="rating">Rating:</label>
-            <div class="controls">
-                {{ form.rating(maxlength =128, class = "span4") }}
-                {% for error in form.errors.rating %}
-                    <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-             </div>
-        </div>
-         <div class="control-group{% if form.errors.was_cooked %} error{% endif %}">
-            <label class="control-label" for="was_cooked">Cooked?:</label>
-            <div class="controls">
-                {{ form.was_cooked(maxlength =128, class = "span4") }}
-                {% for error in form.errors.was_cooked %}
-                    <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-             </div>
-        </div>
- <div class="control-group{% if form.errors.image_file %} error{% endif %}">
-            <label class="control-label" for="image_file">Image Path:</label>
-            <div class="controls">
-                {{ form.image_file(maxlength =128, class = "span4") }}
-                {% for error in form.errors.image_file %}
-                    <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-             </div>
-        </div>
-    <div class="control-group{% if form.errors.timestamp %} error{% endif %}" style="display:none">
-            <label class="control-label" for="timestamp">Recipe Name:</label>
-            <div class="controls">
-                {{ form.timestamp(maxlength =128, class = "span4") }}
-                {% for error in form.errors.timestamp %}
-                    <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-            </div>
-        </div
+           {{form.hidden_tag()}}
+           {{ with_errors(form.recipe_name) }}
+           {{ with_errors(form.ingredients) }}
+           {{ with_errors(form.directions) }}
+           {{ with_errors(form.notes) }}
+           {{ with_errors(form.url) }}
+           {{ with_errors(form.rating) }}
+           {{ with_errors(form.was_cooked) }}
+           {{ with_errors(form.image_path, style="display:none") }}
+           {{ with_errors(form.image_file) }}
+
+        
         <div class="control-group">
             <div class="controls">
                 <input class="btn btn-primary" type="submit" value="Save Changes">

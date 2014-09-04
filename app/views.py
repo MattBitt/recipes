@@ -85,7 +85,7 @@ def add_recipe():
             recipe=Recipe()
             form.populate_obj(recipe)
             import pdb; pdb.set_trace()
-            if request.files['image_file'].filename != '':
+            if len(request.files) > 0:
                 app.logger.debug("Image uploaded")
                 req = request
                 filename = req.files['image_file'].filename
@@ -117,16 +117,22 @@ def edit_recipe(id=1):
         flash('Recipe not found.')
         return redirect(url_for('index'))
     if request.method == 'POST':
-        app.logger.info('request.data')
-        app.logger.info(request.data)
-        app.logger.info('Method = POST')
+        app.logger.debug('request.data')
+        app.logger.debug(request.data)
+        app.logger.debug('Method = POST')
         valid = form.validate_on_submit()
         if valid:
             app.logger.info('Validation Successful - ' + str(form.recipe_name.data))
             form.populate_obj(recipe)
-            #if request.files['image_file'].filename != recipe.image_path and request.files['image_file'].filename != '':
-            #   if upload_image( recipe ) is None:
-            #        flash("Error uploading image")
+            filename = request.files['image_file'].filename
+            if filename != '':
+                req = request
+                filename = req.files['image_file'].filename
+                recipe_name = recipe.recipe_name
+                recipe.image_path = upload_image(req, filename, recipe_name)
+                if recipe.image_path is None:
+                    flash("Error uploading image")
+                
             db.session.add(recipe)
             db.session.commit()
             flash('Your changes have been saved.')
