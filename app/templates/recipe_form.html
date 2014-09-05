@@ -1,4 +1,4 @@
-{% macro with_errors(field) %}
+{% macro with_errors(field, dimensions=None) %}
 
     <div class="control-group">
     {% if field.name != 'image_path' %}
@@ -22,7 +22,7 @@
    <form class="form-horizontal" action="" method="post" name="add_recipe" enctype="multipart/form-data">
            {{form.hidden_tag()}}
            {{ with_errors(form.recipe_name) }}
-           {{ with_errors(form.ingredients) }}
+           {{ with_errors(form.ingredients)  }}
            {{ with_errors(form.directions) }}
            {{ with_errors(form.notes) }}
            {{ with_errors(form.url) }}
