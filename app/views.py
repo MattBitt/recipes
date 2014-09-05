@@ -102,9 +102,9 @@ def add_recipe():
             return redirect(url_for('view_recipe', id=new_rec.id))
         else:
             flash('Invalid data')
-            return render_template('add_recipe.html',form = form)
+            return render_template('recipe_form.html',form = form)
     elif request.method != "POST":
-        return render_template('add_recipe.html',form = form)
+        return render_template('recipe_form.html',form = form)
     return redirect(url_for('add_recipe'))
 
 @app.route('/edit_recipe/<id>', methods = ['GET', 'POST'])
@@ -139,7 +139,7 @@ def edit_recipe(id=1):
         else:
             app.logger.info("Failed Validation")
             import pdb; pdb.set_trace()        
-    return render_template('edit_recipe.html',
+    return render_template('recipe_form.html',
         form = form)
 
 @app.route('/view_recipe/<id>',methods = ['GET', 'POST']) 

@@ -25,6 +25,17 @@ class RecipeForm(Form):
     user_id = IntegerField('user_id')
     timestamp = DateField('Date', format='%Y-%m-%d')
     image_file = FileField('Image File')
-    #test_url = URLField(validators=[url_validator()])
     
+    #test_url = URLField(validators=[url_validator()])
+
+# class MyTextInput(TextInput):
+    # def __init__(self, error_class=u'has_errors'):
+        # super(MyTextInput, self).__init__()
+        # self.error_class = error_class
+
+    # def __call__(self, field, **kwargs):
+        # if field.errors:
+            # c = kwargs.pop('class', '') or kwargs.pop('class_', '')
+            # kwargs['class'] = u'%s %s' % (self.error_class, c)
+        # return super(MyTextInput, self).__call__(field, **kwargs)    
 

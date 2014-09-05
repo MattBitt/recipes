@@ -1,6 +1,6 @@
 {% macro with_errors(field, dimensions=None) %}
 
-    <div class="control-group">
+    <div class="form-group">
     {% if field.name != 'image_path' %}
     <label class="control-label" for='{{field}}'>{{field.label.text + ':'}}</label>
     {% endif %}    
@@ -10,24 +10,27 @@
         {{ field(class=css_class, **kwargs) }}
         <span class="help-inline">{% for error in field.errors %}<li>{{ error|e }}</li>{% endfor %}</ul>
     {% else %}
-        {{ field(**kwargs) }}
+        {% set css_class = 'form-control' %}
+        {{ field(class=css_class, **kwargs) }}
     {% endif %}
         </div>
     </div>
     
 {% endmacro %}
-<style>
-form input#recipe_name {
-width:600px
-}
-form textarea#ingredients, form textarea#directions {
-     width: 600px;
-     height: 200px;
-     max-width: 800px;
-}
-</style>
+<!-- extend base layout -->
+{% extends "base.html" %}
 
-   <form class="form-horizontal" action="" method="post" name="add_recipe" enctype="multipart/form-data">
+{% block content %}
+<h1>Add a New Recipe</h1>
+{% include 'flash.html' %}
+
+ 
+
+<div class="row">
+<div class="col-sm-1 col-md-2"></div>
+<div class="col-md-8 col-sm-6">
+<div class="well">
+   <form action="" method="post" name="add_recipe" enctype="multipart/form-data">
            {{form.hidden_tag()}}
            {{ with_errors(form.recipe_name) }}
            {{ with_errors(form.ingredients)  }}
@@ -45,3 +48,8 @@ form textarea#ingredients, form textarea#directions {
             </div>
         </div>
     </form>
+</div>
+</div>
+<div class="col-sm-1 col-md-2"></div>
+</div>    
+{% endblock %}
