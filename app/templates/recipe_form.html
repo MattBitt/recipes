@@ -16,8 +16,16 @@
     </div>
     
 {% endmacro %}
-
-
+<style>
+form input#recipe_name {
+width:600px
+}
+form textarea#ingredients, form textarea#directions {
+     width: 600px;
+     height: 200px;
+     max-width: 800px;
+}
+</style>
 
    <form class="form-horizontal" action="" method="post" name="add_recipe" enctype="multipart/form-data">
            {{form.hidden_tag()}}

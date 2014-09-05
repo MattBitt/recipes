@@ -84,7 +84,6 @@ def add_recipe():
             app.logger.info("Adding a new Recipe")
             recipe=Recipe()
             form.populate_obj(recipe)
-            import pdb; pdb.set_trace()
             if len(request.files) > 0:
                 app.logger.debug("Image uploaded")
                 req = request
@@ -124,13 +123,13 @@ def edit_recipe(id=1):
         if valid:
             app.logger.info('Validation Successful - ' + str(form.recipe_name.data))
             form.populate_obj(recipe)
-            filename = request.files['image_file'].filename
-            if filename != '':
+            if len(request.files) > 0:
                 req = request
                 filename = req.files['image_file'].filename
                 recipe_name = recipe.recipe_name
                 recipe.image_path = upload_image(req, filename, recipe_name)
                 if recipe.image_path is None:
+                    app.logger.error('Error uploading image')
                     flash("Error uploading image")
                 
             db.session.add(recipe)

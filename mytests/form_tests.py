@@ -67,6 +67,7 @@ class FormTests(BaseTest):
                 'REMOTE_ADDR': '127.0.0.1'})
         app.logger.info('Response:  ' + str(rv.status_code))
         r = Recipe.query.filter('id=1').first()
+ 
         assert rv.status_code == 302
         assert r.recipe_name == data['recipe_name']
         
