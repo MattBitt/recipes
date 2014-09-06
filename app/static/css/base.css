@@ -1,0 +1,93 @@
+
+@font-face {
+    font-family: 'TeXGyreCursorRegular';
+    src: url('../font/TeX-Gyre-Cursor/texgyrecursor-regular-webfont.eot');
+    src: url('../font/TeX-Gyre-Cursor/texgyrecursor-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../font/TeX-Gyre-Cursor/texgyrecursor-regular-webfont.woff') format('woff'),
+         url('../font/TeX-Gyre-Cursor/texgyrecursor-regular-webfont.ttf') format('truetype'),
+         url('../font/TeX-Gyre-Cursor/texgyrecursor-regular-webfont.svg#TeXGyreCursorRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'TeXGyreCursorBold';
+    src: url('../font/TeX-Gyre-Cursor/texgyrecursor-bold-webfont.eot');
+    src: url('../font/TeX-Gyre-Cursor/texgyrecursor-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../font/TeX-Gyre-Cursor/texgyrecursor-bold-webfont.woff') format('woff'),
+         url('../font/TeX-Gyre-Cursor/texgyrecursor-bold-webfont.ttf') format('truetype'),
+         url('../font/TeX-Gyre-Cursor/texgyrecursor-bold-webfont.svg#TeXGyreCursorBold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #393939;
+    font-size: 16px;
+    padding: 10px;
+}
+img {
+    max-width: 100%;
+}
+a {
+    white-space: nowrap;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    font-family: 'TeXGyreCursorRegular', Arial, sans-serif;
+    letter-spacing: 0;
+}
+
+.page-header {
+    padding-bottom: 0;
+    color: #393939;
+    font-family: 'TeXGyreCursorRegular', Arial, sans-serif;
+}
+
+.page-header h1 {
+    font: 38px/57px 'TeXGyreCursorBold', Arial, sans-serif;
+}
+.page-header a {
+    color: #393939;
+}
+.page-header a:hover {
+    color: #333333;
+    text-decoration: none;
+}
+
+.navbar div.brand{
+    text-align: center;
+    width: 100%;
+    margin: 36px 0 42px 0;
+    float: none;
+}
+
+.navbar .nav > li > a {
+    float: none;
+    color: #393939;
+    font-size: 18px;
+    line-height: 19px;
+    padding: 10px 0px 12px 0;
+    text-decoration: none;
+    text-shadow: none;
+    margin-right: 32px;
+}
+
+.box {
+  width: 150px;
+  display: inline-block;
+  vertical-align: top;
+  margin-bottom: 12px;
+}
+
+footer {
+    font-family: 'TeXGyreCursorRegular', Arial, sans-serif;
+    border-top: 1px solid #ddd;
+    margin-top: 35px;
+    padding-top: 6px;
+    text-align: center;
+    font-size: 12px;
+}

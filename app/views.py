@@ -27,11 +27,14 @@ def internal_error(error):
 def index(page = 1):
     recent_recipes = get_recent_recipes().limit(5).all()
     #favorite_recipes = get_favorite_recipes().all()
+    for r in recent_recipes:
+        r.fav = False
     my_recipes = set(recent_recipes)
     
     while len(my_recipes) < 10:
         favorite = get_favorites()
         for fav in favorite:
+            fav.fav  = True
             my_recipes.add(fav)
             if len(my_recipes) == 10:
                 break
@@ -137,7 +140,7 @@ def edit_recipe(id=1):
         if valid:
             app.logger.info('Validation Successful - ' + str(form.recipe_name.data))
             form.populate_obj(recipe)
-            if len(request.files) > 0:
+            if len(request.files) > 0 and request.files['image_file'].filename:
                 req = request
                 filename = req.files['image_file'].filename
                 recipe_name = recipe.recipe_name

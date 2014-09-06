@@ -22,7 +22,7 @@
 		-webkit-box-shadow: 2px 2px 4px rgba(0,0, 0, 0.3);
 		-moz-box-shadow: 2px 2px 4px rgba(0,0, 0, 0.3);
 		box-shadow: 2px 2px 4px rgba(0,0, 0, 0.3);
-		-webkit-transition: all 0.2s ease-in;
+		-webkit-transition: all 0.1s ease-in;
 	}
 	
     
@@ -49,6 +49,7 @@
 	.photo-album .large img {
 		width:33%;
 		height: auto;
+        border:1px solid black;
 	}
     
     .recipe_card {
@@ -56,20 +57,20 @@
 		color: #333;
 		
 		font-size: 17px;
-        /*border:2px solid red;*/
     }
     .recipe_card.header {
-    font-family:"gongnormal", "Snell Roundhand", "Helvetica Neue",Arial,Helvetica,sans-serif;
-    width: 50%;
+    font-family:"NotethisRegular", "Snell Roundhand", "Helvetica Neue",Arial,Helvetica,sans-serif;
+    
     }
     .recipe_card .title {
-		font-size: 22px;
+		font-size: 26px;
         font-weight: bold;
         transform: rotate(-5deg);
     
     }
     .recipe_card img {
-        position: absolute;
-        right: 50px;
-        top: 20px;
+        float:right;
         }
+.favorite {
+border: 4px solid yellow;
+}
