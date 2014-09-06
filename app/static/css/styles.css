@@ -6180,5 +6180,8 @@ button.close {
 }
 body {
   color: #000000;
-  background-color: #000000;
+  background-color: #ffffff;
+}
+.recipe_cards {
+  padding-bottom: 50px;
 }

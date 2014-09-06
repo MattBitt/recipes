@@ -26,15 +26,20 @@ def internal_error(error):
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 def index(page = 1):
     recent_recipes = get_recent_recipes().limit(5).all()
-    favorite_recipes = get_favorite_recipes().all()
-    my_recipes = recent_recipes + favorite_recipes
-    for index, r in enumerate(my_recipes):
-        if index % 2:
-            r.odd = True
-            r.even = False
-        else:
-            r.odd = False
-            r.even = True
+    #favorite_recipes = get_favorite_recipes().all()
+    my_recipes = set(recent_recipes)
+    
+    while len(my_recipes) < 10:
+        favorite = get_favorites()
+        for fav in favorite:
+            my_recipes.add(fav)
+            if len(my_recipes) == 10:
+                break
+        
+    #need to check if any random are in recent_recipes.  if they are get a new one
+    my_recipes = list(my_recipes)
+    random.shuffle(my_recipes)
+
     return render_template('index.html',
         title = 'Home',
         recipes = my_recipes, 
@@ -216,18 +221,18 @@ def get_recent_recipes():
                'was_cooked=1').order_by(desc(Recipe.timestamp))
 
         
-def get_favorite_recipes():        
-    favorite_recipes = Recipe.query.filter('rating=5')
-    random_favs = []
-    while len(random_favs) < app.config['RECIPES_PER_HOME_PAGE']:
-        random_row = int(favorite_recipes.count()*random.random())
-        if random_row not in random_favs:
-            random_favs.append(random_row)
-    random_fav_ids = []
-    for f in random_favs:
-        random_fav_ids.append(favorite_recipes[f].id)
-    favorite_recipes = Recipe.query.filter(Recipe.id.in_(random_fav_ids))
-    return favorite_recipes
+# def get_favorite_recipes():        
+    # favorite_recipes = Recipe.query.filter('rating=5')
+    # random_favs = []
+    # while len(random_favs) < app.config['RECIPES_PER_HOME_PAGE']:
+        # random_row = int(favorite_recipes.count()*random.random())
+        # if random_row not in random_favs:
+            # random_favs.append(random_row)
+    # random_fav_ids = []
+    # for f in random_favs:
+        # random_fav_ids.append(favorite_recipes[f].id)
+    # favorite_recipes = Recipe.query.filter(Recipe.id.in_(random_fav_ids))
+    # return favorite_recipes
     
 def upload_image( req, filename, recipe_name ):
         """
@@ -254,3 +259,7 @@ def get_css_props( index ):
     css_props['tilt'] = random.randint(-10, 10)
     return css_props
     
+def get_favorites():
+    favorite_recipes = Recipe.query.filter('rating=5').all()
+    random.shuffle(favorite_recipes)
+    return favorite_recipes[0:5]
