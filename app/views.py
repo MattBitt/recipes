@@ -8,7 +8,7 @@ from scraper import scrape_recipe
 import random
 import os
 from image_functions import resize_picture
-
+import random
 
 @app.errorhandler(404)
 def internal_error(error):
@@ -25,11 +25,19 @@ def internal_error(error):
 @app.route('/index/', methods = ['GET', 'POST'])
 @app.route('/index/<int:page>', methods = ['GET', 'POST'])
 def index(page = 1):
-    recent_recipes = get_recent_recipes().paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
-    favorite_recipes = get_favorite_recipes().paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
+    recent_recipes = get_recent_recipes().limit(5).all()
+    favorite_recipes = get_favorite_recipes().all()
+    my_recipes = recent_recipes + favorite_recipes
+    for index, r in enumerate(my_recipes):
+        if index % 2:
+            r.odd = True
+            r.even = False
+        else:
+            r.odd = False
+            r.even = True
     return render_template('index.html',
         title = 'Home',
-        recipes = recent_recipes.items, 
+        recipes = my_recipes, 
         #recipes = zip(recent_recipes.items, favorite_recipes.items),
          url_base = 'index'
         )
@@ -241,5 +249,8 @@ def upload_image( req, filename, recipe_name ):
             os.remove(os.path.join(dest_path, temp_file))
             return None
          
-    
+def get_css_props( index ):
+    css_props = {'class':'img' + str(index + 1)}
+    css_props['tilt'] = random.randint(-10, 10)
+    return css_props
     

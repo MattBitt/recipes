@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/static/css/styles.css" rel="stylesheet">
     <link href="/static/css/my_css.css" rel="stylesheet">
-    
+    <link href="/static/css/polaroid.css" rel="stylesheet">
+    <link href="/static/fonts/gong_font.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>    
     <style>
     .body {
         color:  #000000
@@ -17,15 +19,7 @@
 
    </style>
     <style type="text/css" >
-    @font-face {
-    font-family: 'MomsDinerMedium';
-    src: url('/static/fonts/momsdiner.eot');
-    src: url('/static/fonts/momsdiner.eot') format('embedded-opentype'),
-         url('/static/fonts/momsdiner.woff2') format('woff2'),
-         url('/static/fonts/momsdiner.woff') format('woff'),
-         url('/static/fonts/momsdiner.ttf') format('truetype'),
-         url('/static/fonts/momsdiner.svg#MomsDinerMedium') format('svg');
-    } 
+
     </style>
 
 
@@ -47,7 +41,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="navbar-brand" href="/" font-family:"Times New Roman", Georgia, Serif>Recipes</a>
+          <a class="navbar-brand" href="/" >Our Recipes</a>
             <ul class="nav navbar-nav" role="tablist">
               <li><a href="{{ url_for('index') }}">Home</a></li>
               <li><a href="{{ url_for('our_recipes') }}">Our Recipes</a></li>
@@ -64,7 +58,7 @@
       
     </div>   
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    
     <script src="/static/js/bootstrap.min.js"></script>
   </div>
   </body>
