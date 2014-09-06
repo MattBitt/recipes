@@ -29,7 +29,8 @@ def index(page = 1):
     favorite_recipes = get_favorite_recipes().paginate(page, app.config['RECIPES_PER_HOME_PAGE'], False)
     return render_template('index.html',
         title = 'Home',
-        recipes = zip(recent_recipes.items, favorite_recipes.items),
+        recipes = recent_recipes.items, 
+        #recipes = zip(recent_recipes.items, favorite_recipes.items),
          url_base = 'index'
         )
 

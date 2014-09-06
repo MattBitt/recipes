@@ -18,23 +18,16 @@
 <div class="col-lg-2"></div>
 <div class="col-lg-3"style="text-align:center"><h2>Favorite Recipes</h2></div>
 </div>
-{% for recent,favorite in recipes %}
+{% for recent in recipes %}
 <div class="row top-buffer">
-
-	<div class="col-lg-2"></div>
-
-    <div class="col-md-3 my_card" style="text-align:center">
-
+    <div class="col-md-1"></div>
+    <div class="col-md-10 my_card">
     	<img style="height:auto; width:auto; max-width:225px; max-height:300px; margin:auto" src="/static/pictures/{{recent['image_path']}}">
     	<a href="{{url_for('view_recipe', id = recent['id']) }}" > {{ recent["recipe_name"] }}  </a>
     </div>
-    <div class="col-lg-2"></div>
-	<div class="col-md-3 my_card" style="text-align:center">
-		<img class="img-responsive" style="height:auto; width:auto; max-width:225px; max-height:300px;" src="/static/pictures/{{favorite['image_path']}}">
-		<a href="{{url_for('view_recipe', id = favorite['id']) }}" > {{ favorite["recipe_name"] }}  </a>
-	</div>
-    <div class="col-lg-2"></div>
+    <div class="col-md-1"></div>
 </div>
+
 {% endfor %}
 <div style="padding-bottom:100px"></div>
 </div>
