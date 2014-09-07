@@ -5,3 +5,4 @@ tmp/
 app/static/pictures/*
 app/static/src/*
 app/static/old_pictures/*
+app/static/old_delete soon/*

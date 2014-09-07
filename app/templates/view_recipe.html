@@ -2,33 +2,24 @@
 
 {% block content %}
 {% include 'flash.html' %}
-<div class="row">
-<div class="col-md-2"></div>
-<div class="col-md-4">
-<h1>{{ recipe['recipe_name'] }}</h1>
+
+
+<div class="large-recipe-card-matte">
+<div class="large-recipe-card">
+<div class = "title">{{ recipe['recipe_name'] }}</div>
 {% if recipe['url'] %}
 	<p><a href="{{recipe['url']}}">{{recipe['url']}}</a></p>
 {% endif %}
 {% if recipe['rating'] %}
-	<p>{{recipe['rating']}}</p>
+	<p>Rating:  <img class="big-rating" src="/static/img/{{recipe.rating}}broccoli.png" alt={{recipe.rating}}></img></p>
 {% endif %}
 {% if recipe['timestamp'] %}
 	<p>{{recipe['timestamp'] | datetimefilter}}</p>
 {% endif %}
-</div>
-<div class="col-md-1"></div>
-<div class="col-md-4" style="text-align:center">
-<div class="col-md-1"></div>
+
 {% if recipe['image_path'] %}
-<img class="img-responsive" style="height:auto; width:auto; max-width:400; max-height:400;" src="/static/pictures/{{recipe['image_path']}}">
-
+<img class="img-responsive lg-food-pic" src="/static/pictures/{{recipe['image_path']}}">
 {% endif %}
-</div>
-</div>
-
-
-
-
 
 <p>Ingredients</p>
 <ul>
@@ -59,5 +50,7 @@ Notes
 <a href="{{url_for('edit_recipe',id=recipe['id'])}}">Edit</a>
 <a href="{{url_for('print_recipe',id=recipe['id'])}}">Print</a>
 <a href="{{url_for('delete_recipe',id=recipe['id'])}}">Delete</a> (This cannot be undone)
+</div>
+</div>
 
 {% endblock %}

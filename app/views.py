@@ -46,7 +46,7 @@ def index(page = 1):
     return render_template('index.html',
         title = 'Home',
         recipes = my_recipes, 
-        #recipes = zip(recent_recipes.items, favorite_recipes.items),
+        single_page = True,
          url_base = 'index'
         )
 
@@ -54,11 +54,16 @@ def index(page = 1):
 @app.route('/our_recipes/<int:page>', methods = ['GET', 'POST'])
 def our_recipes( page=1 ):
     recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=1').order_by(Recipe.recipe_name)
-    recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
+    single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
+    if not single_page:
+        recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
+    else:
+        recipes = recipes.all()
 
-    return render_template('browse.html',
-        title = 'Our Recipes',
+    return render_template('index.html',
+        title = 'Our Cookbook',
         recipes = recipes,
+        single_page = single_page,
         url_base = 'our_recipes'
         )
     
@@ -67,11 +72,15 @@ def our_recipes( page=1 ):
 @app.route('/moms_recipes/<int:page>', methods = ['GET', 'POST'])
 def moms_recipes( page=1 ):
     recipes = Recipe.query.filter('user_id=3').order_by(Recipe.recipe_name)        
-    recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
-    #flash('Loading Recipes')
-    return render_template('browse.html',
+    single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
+    if not single_page:
+        recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
+    else:
+        recipes = recipes.all()
+    return render_template('index.html',
         title = 'Moms Recipes',
         recipes = recipes,
+        single_page = single_page,
         url_base = 'moms_recipes'
         )   
 
@@ -79,11 +88,18 @@ def moms_recipes( page=1 ):
 @app.route('/meal_ideas/<int:page>', methods = ['GET', 'POST'])
 def meal_ideas( page=1 ):
     recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=0').order_by(Recipe.recipe_name)
-    recipes = recipes.filter('was_cooked=0')
-    recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
-    return render_template('browse.html',
+    single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
+    if not single_page:
+        recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
+    else:
+        recipes = recipes.all()
+    
+
+
+    return render_template('index.html',
         title = 'Meal Ideas',
         recipes = recipes,
+        single_page = single_page,
         url_base = 'meal_ideas'
         )  
         

@@ -4,50 +4,58 @@
 {% block content %}
 
 <div class="row" style="padding-bottom:100px">
-      <div class="col-lg-12" style="text-align:center"><h1>Our Family Recipes</h1></div>
+      <div class="col-lg-12" style="text-align:center"><h1>{{title}}</h1></div>
 </div>
 
 {% include 'flash.html' %}
 
-<div class="photo-album ">
+<div class="recipe-cards ">
 <div class "row " >
-{% for recent in recipes %}
-
-
-
+{% if single_page %}
+    {% set rec_list = recipes %}
+{% else %}
+    {% set rec_list = recipes.items %}
+{% endif %}
+{% for rec in rec_list %}
 <div class="col-md-6 col-sm-12 recipe_cards " >
-    
-    <a href="{{url_for('view_recipe', id = recent['id']) }}" class="large polaroid img ">
+    <a href="{{url_for('view_recipe', id = rec['id']) }}" class="large polaroid img ">
     <div class="recipe_card header" >  
-        <p class="title">{{ recent["recipe_name"] }} </p>
-        <img src="/static/pictures/{{recent['image_path']}}"  alt="">
+        <p class="title">{{ rec["recipe_name"] }} </p>
+        {% if rec.image_path %}
+        <img src="/static/pictures/{{rec['image_path']}}"  class="foodpic" alt=""></img>
+        {% endif %}
     </div>
-    
     <div class="recipe_card ">
      <br >
-     <p>Rating:  {{recent.rating}}</p>
-     <p>Date: {{recent.timestamp|  datetimefilter}}</p>
-     {% if recent.notes %}
-     <p>{{ recent.notes }}</p>
+     {% if rec.rating %}
+     <p>Rating:  <img src="/static/img/{{rec.rating}}broccoli.png" alt={{rec.rating}}></img></p>
+    {% endif %}
+    {% if rec.timestamp %}
+     <p>Date: {{rec.timestamp|  datetimefilter}}</p>
      {% endif %}
-     
-     
+     {% if rec.notes %}
+     <p>{{ rec.notes }}</p>
+     {% endif %}
     </div>
     </a>    
 </div>
 
 {% endfor %}
-
+</div>
+</div>
+{% if not single_page %}
+{% include 'pager.html' %}
+{% endif %}
 <script>
 $(".polaroid").each( function() {
-  var rNum = (Math.random()*10)-5;
-  
-  $(this).css( {   
-    '-webkit-transform': 'rotate('+rNum+'2deg)',
-    '-moz-transform': 'rotate('+rNum+'2deg)',
-    'transform':'rotate('+rNum+'2deg)'
-    
-  } );  
-} );
+    var rNum = (Math.random()*10)-5;
+ 
+   $(this).css( {   
+        '-webkit-transform': 'rotate('+rNum+'2deg)',
+        '-moz-transform': 'rotate('+rNum+'2deg)',
+        'transform':'rotate('+rNum+'2deg)'
+        } );  
+
+        } );
 </script>
 {% endblock %}

@@ -5,22 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/static/css/styles.css" rel="stylesheet">
-    <link href="/static/css/my_css.css" rel="stylesheet">
-    <link href="/static/css/polaroid.css" rel="stylesheet">
-    <link href="/static/fonts/gong_font.css" rel="stylesheet">
+    <link href="/static/fonts/fonts.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>    
-    <style>
-    .body {
-        color:  #000000
-        }
-      .container { min-height: 100% }
-
-      .top-buffer { margin-top:5; 100px; }
-
-   </style>
-    <style type="text/css" >
-
-    </style>
 
 
 
@@ -31,35 +17,34 @@
     {% endif %}
 
   </head>
-  <body>
-    
+<body>
     <div class="container-fluid ">
-      <div class="navbar">
-        <div class="navbar-inner">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="navbar-brand" href="/" >Our Recipes</a>
-            <ul class="nav navbar-nav" role="tablist">
-              <li><a href="{{ url_for('index') }}">Home</a></li>
-              <li><a href="{{ url_for('our_recipes') }}">Our Recipes</a></li>
-              <li><a href="{{ url_for('meal_ideas') }}">Meal Ideas</a></li>
-              <li><a href="{{ url_for('moms_recipes') }}">Moms Recipes</a></li>
-              <li><a href="{{ url_for('add_recipe') }}">Add Recipe</a></li>
-            </ul>
-        </div>
-      </div>
-      
-      <hr>
+        <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Our Cookbook</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('our_recipes') }}">Our Recipes</a></li>
+                    <li><a href="{{ url_for('meal_ideas') }}">Meal Ideas</a></li>
+                    <li><a href="{{ url_for('moms_recipes') }}">Moms Recipes</a></li>
+                    <li><a href="{{ url_for('add_recipe') }}">Add Recipe</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </nav>
              
           {% block content %}{% endblock %}
       
     </div>   
-
-    
     <script src="/static/js/bootstrap.min.js"></script>
-  </div>
-  </body>
+</body>
 </html>
