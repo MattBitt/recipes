@@ -1,9 +1,0 @@
-@font-face {
-    font-family: 'MomsDinerMedium';
-    src: url('momsdiner.eot');
-    src: url('momsdiner.eot') format('embedded-opentype'),
-         url('momsdiner.woff2') format('woff2'),
-         url('momsdiner.woff') format('woff'),
-         url('momsdiner.ttf') format('truetype'),
-         url('momsdiner.svg#MomsDinerMedium') format('svg');
-}
