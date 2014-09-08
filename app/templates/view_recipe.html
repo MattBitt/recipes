@@ -5,52 +5,50 @@
 
 
 <div class="large-recipe-card-matte">
-<div class="large-recipe-card">
-<div class = "title">{{ recipe['recipe_name'] }}</div>
-{% if recipe['url'] %}
-	<p><a href="{{recipe['url']}}">{{recipe['url']}}</a></p>
-{% endif %}
-{% if recipe['rating'] %}
-	<p>Rating:  <img class="big-rating" src="/static/img/{{recipe.rating}}broccoli.png" alt={{recipe.rating}}></img></p>
-{% endif %}
-{% if recipe['timestamp'] %}
-	<p>{{recipe['timestamp'] | datetimefilter}}</p>
-{% endif %}
-
-{% if recipe['image_path'] %}
-<img class="img-responsive lg-food-pic" src="/static/pictures/{{recipe['image_path']}}">
-{% endif %}
-
-<p>Ingredients</p>
-<ul>
-{% for ingredient in recipe.ingredient_list %}
-     {% if ingredient.strip() %}
-    <li> {{ ingredient }}  </li>
-    {% endif %}
-{% endfor %}
-</ul>
-Directions
-<ol>
-{% for direction in recipe.direction_list %}
-    {% if direction.strip() %}
-    <li> {{ direction }}  </li>
-    {% endif %}
-{% endfor %}
-</ol>
-{% if recipe.note_list %}
-Notes
-<ul>
-{% for note in recipe.note_list %}
-    {% if note.strip() %}
-    <li> {{ note }}  </li>
-    {% endif %}
-{% endfor %}
-</ul>
-{% endif %}
+    <div class="large-recipe-card">
+        <div class = "title">{{ recipe['recipe_name'] }}</div>
+        {% if recipe['url'] %}
+            <p><a href="{{recipe['url']}}">{{recipe['url']}}</a></p>
+        {% endif %}
+        {% if recipe['rating'] %}
+            <p>Rating:  <img class="big-rating" src="/static/img/{{recipe.rating}}broccoli.png" alt={{recipe.rating}}></img></p>
+        {% endif %}
+        {% if recipe['timestamp'] %}
+            <p>{{recipe['timestamp'] | datetimefilter}}</p>
+        {% endif %}
+        {% if recipe['image_path'] %}
+            <img class="img-responsive lg-food-pic" src="/static/pictures/{{recipe['image_path']}}">
+        {% endif %}
+        <p>Ingredients</p>
+        <ul>
+            {% for ingredient in recipe.ingredient_list %}
+                {% if ingredient.strip() %}
+                    <li> {{ ingredient }}  </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        Directions
+        <ol>
+            {% for direction in recipe.direction_list %}
+                {% if direction.strip() %}
+                    <li> {{ direction }}  </li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+        {% if recipe.note_list %}
+            Notes
+            <ul>
+            {% for note in recipe.note_list %}
+                {% if note.strip() %}
+                    <li> {{ note }}  </li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        {% endif %}
 <a href="{{url_for('edit_recipe',id=recipe['id'])}}">Edit</a>
 <a href="{{url_for('print_recipe',id=recipe['id'])}}">Print</a>
 <a href="{{url_for('delete_recipe',id=recipe['id'])}}">Delete</a> (This cannot be undone)
-</div>
+    </div>
 </div>
 
 {% endblock %}
