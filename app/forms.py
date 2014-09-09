@@ -27,7 +27,8 @@ class RecipeForm(Form):
     image_file = FileField('Image File')
     
     #test_url = URLField(validators=[url_validator()])
-
+class SearchForm(Form):
+    search = TextField('search', validators = [DataRequired()])
 # class MyTextInput(TextInput):
     # def __init__(self, error_class=u'has_errors'):
         # super(MyTextInput, self).__init__()

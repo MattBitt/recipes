@@ -8,7 +8,7 @@
     {% endif %}
 
      {% for p in range(1,recipes.pages + 1) %}
-        <li><a href="{{ url_for(url_base, page=p) }}">{{p}}</a></li>
+        <li><a href="{{ url_for(url_base, search_term=search_term, page=p) }}">{{p}}</a></li>
     {% endfor %}
 
     {% if recipes.has_next %}

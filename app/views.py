@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from app import app, db
-from forms import RecipeForm
+from forms import RecipeForm, SearchForm
 from models import Recipe
 from datetime import datetime, date
 from sqlalchemy import desc
@@ -9,6 +9,12 @@ import random
 import os
 from image_functions import resize_picture
 import random
+
+
+@app.before_request
+def before_request():
+    g.search_form = SearchForm()
+
 
 
 @app.errorhandler(404)
@@ -88,7 +94,7 @@ def moms_recipes( page=1 ):
 @app.route('/meal_ideas/', methods = ['GET', 'POST'])
 @app.route('/meal_ideas/<int:page>', methods = ['GET', 'POST'])
 def meal_ideas( page=1 ):
-    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=0').order_by(Recipe.recipe_name)
+    recipes = Recipe.query.filter(Recipe.user_id.in_((1,2))).filter('was_cooked=0').order_by(Recipe.recipe_name)
     single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
     if not single_page:
         recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
@@ -216,12 +222,15 @@ def print_recipe(id):
     return render_template('print_recipe.html',
         recipe = recipe)
 
-@app.route('/search/', methods = ['GET', 'POST'])
+@app.route('/search', methods = [ 'POST'])
 @app.route('/search/<search_term>',methods = ['GET', 'POST'])                 
 @app.route('/search/<search_term>/<int:page>', methods = ['GET', 'POST'])
 def search( search_term=None, page=1 ):
-    if search_term is None:
-        return redirect(url_for('index'))
+    if request.method == 'POST':
+        if not g.search_form.validate_on_submit():
+            return redirect(url_for('index'))
+        if request.form['search']:
+            search_term = request.form['search']
     ids = search_recipes( search_term )
     recipes = Recipe.query.filter(Recipe.id.in_(ids))
     single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
