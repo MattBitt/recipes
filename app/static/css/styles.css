@@ -6176,72 +6176,75 @@ body {
   font-size: 30px;
   transform: rotate(-5deg);
 }
-a.polaroid {
+.recipe-note-card {
   display: block;
   text-decoration: none;
   color: #333;
   padding: 10px 100px 20px 10px;
   border: 1px solid #BFBFBF;
   /*border: 4px solid blue; */
-  background-color: white;
+  margin-bottom: 50px;
   background-image: url('/static/img/notecard.png');
   background-size: 100%;
-  z-index: 2;
+  z-index: 100;
   font-size: 0.7em;
+  width: 100%;
+  min-height: 300px;
+  background-color: #fdf3e7;
+  font-size: 1em;
+  cursor:pointer;
   -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   -webkit-transition: all 0.1s ease-in;
 }
-a.polaroid:hover,
-a.polaroid:focus,
-a.polaroid:active {
+.recipe-note-card:hover,
+.recipe-note-card:focus,
+.recipe-note-card:active {
   z-index: 999;
   border-color: #6A6A6A;
   -webkit-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
   box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
-  /*
-    -webkit-transform: rotate(0deg) scale(1.05);
-    -moz-transform: rotate(0deg) scale(1.05);
-    transform: rotate(0deg) scale(1.05); */
 }
-.recipe-cards .large {
-  width: 100%;
-  min-height: 300px;
-  background-color: #fdf3e7;
-  padding: 20px 20px 30px 20px;
-  font-size: 1em;
-}
-.recipe-cards .large img {
-  width: 33%;
-  height: auto;
-  border: 1px solid black;
-}
-.recipe_cards {
-  padding-bottom: 50px;
-}
-.recipe_card {
-  width: 95%;
-  color: #333;
-  font-size: 17px;
-}
-.recipe_card.header {
+
+.recipe-card-header {
   font-family: "NotethisRegular", "Snell Roundhand", "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
-.recipe_card .title {
+.recipe-card-header .title {
   font-size: 26px;
   font-weight: bold;
   transform: rotate(-5deg);
 }
-.recipe_card .foodpic {
+.recipe-card-header .foodpic {
   float: right;
+  width: 33%;
+  height: auto;
 }
-.favorite {
-  border: 4px solid yellow;
+
+
+.recipe-card-body {
+  width: 95%;
+  color: #333;
+  font-size: 17px;
 }
+
+.recipe-card-body img{
+  width: 33%;
+  height: auto;
+  border: 1px solid black;
+}
+
+
+
+
+
+
+
+
 .large-recipe-card-matte {
   /*background-image: url("/static/img/placemat.jpg");*/
+
   background: #000000;
   border: 5px solid green;
   width: 80%;
