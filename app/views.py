@@ -10,6 +10,7 @@ import os
 from image_functions import resize_picture
 import random
 
+
 @app.errorhandler(404)
 def internal_error(error):
     return render_template('404.html'), 404
@@ -93,9 +94,6 @@ def meal_ideas( page=1 ):
         recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
     else:
         recipes = recipes.all()
-    
-
-
     return render_template('index.html',
         title = 'Meal Ideas',
         recipes = recipes,
@@ -203,7 +201,6 @@ def delete_recipe(id):
     return redirect(url_for('index'))
 
 @app.route('/print_recipe/<id>',methods = ['GET', 'POST']) 
-
 def print_recipe(id):
     recipe = Recipe.query.filter_by(id = id).first()
     if recipe == None:
@@ -218,7 +215,30 @@ def print_recipe(id):
             recipe.note_list = recipe.notes.split('\n')
     return render_template('print_recipe.html',
         recipe = recipe)
-       
+
+@app.route('/search/', methods = ['GET', 'POST'])
+@app.route('/search/<search_term>',methods = ['GET', 'POST'])                 
+@app.route('/search/<search_term>/<int:page>', methods = ['GET', 'POST'])
+def search( search_term=None, page=1 ):
+    if search_term is None:
+        return redirect(url_for('index'))
+    ids = search_recipes( search_term )
+    recipes = Recipe.query.filter(Recipe.id.in_(ids))
+    single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
+    if not single_page:
+        recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
+    else:
+        recipes = recipes.all()
+    return render_template('index.html',
+        title = 'Search Results',
+        recipes = recipes,
+        search_term=search_term, 
+        single_page = single_page,
+        url_base = 'search'
+        )  
+    
+        
+
 def fillout_form( url ):
     #import pdb; pdb.set_trace()
     new_recipe = scrape_recipe(url)
@@ -282,3 +302,16 @@ def get_favorites():
     favorite_recipes = Recipe.query.filter('rating=5').all()
     random.shuffle(favorite_recipes)
     return favorite_recipes[0:5]
+    
+    
+def search_recipes( search_term ):
+    if search_term == "":
+        return None
+    search_term = "%" + search_term + "%"
+    recipe_ids = []
+    for r in Recipe.query.filter(Recipe.user_id.in_((1,2))).filter(Recipe.recipe_name.like(search_term)).all():
+        recipe_ids.append(r.id)
+    for r in Recipe.query.filter(Recipe.user_id.in_((1,2))).filter(Recipe.ingredients.like(search_term)).all():
+        recipe_ids.append(r.id)
+    #import pdb; pdb.set_trace()
+    return recipe_ids

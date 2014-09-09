@@ -5,6 +5,7 @@ from app.forms import RecipeForm
 from app.models import Recipe
 from app import app, db
 from flask import render_template, flash, redirect, session, url_for, request, g
+from app.views import search_recipes
 
 
 def create_recipe():
@@ -54,6 +55,16 @@ class DB_Tests(BaseTest):
         rv = self.app.get(url_for('view_recipe', id=1))
         assert rec.recipe_name in rv.data
         self.ctx.pop()
+
+    def test_search(self):
+        rec = search_recipes("blah")
+        assert rec == []
+        rec = search_recipes("Test")
+        assert len(rec) == 1
+        rec = search_recipes("bacon")
+        assert len(rec) == 1
+        
+        
 
 
 if __name__ == '__main__':

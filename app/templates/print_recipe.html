@@ -1,2 +1,29 @@
-{% include 'recipe.html' %}
-
+<html>
+<div class = "title">{{ recipe['recipe_name'] }}</div>
+<p>Ingredients</p>
+<ul>
+    {% for ingredient in recipe.ingredient_list %}
+        {% if ingredient.strip() %}
+            <li> {{ ingredient }}  </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+Directions
+<ol>
+    {% for direction in recipe.direction_list %}
+        {% if direction.strip() %}
+            <li> {{ direction }}  </li>
+        {% endif %}
+    {% endfor %}
+</ol>
+{% if recipe.note_list %}
+    Notes
+    <ul>
+    {% for note in recipe.note_list %}
+        {% if note.strip() %}
+            <li> {{ note }}  </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% endif %}
+</html>
