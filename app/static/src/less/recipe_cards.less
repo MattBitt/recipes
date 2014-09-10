@@ -1,0 +1,100 @@
+@cards_background: #FDF3E7;
+@cards_title_font : "NotethisRegular", "Snell Roundhand", "Helvetica Neue",Arial,Helvetica,sans-serif;
+@lg_card_rotation:  2deg;
+
+.recipe-note-card {
+  display: block;
+  text-decoration: none;
+  color: #333;
+  padding: 10px 100px 20px 10px;
+  border: 1px solid #BFBFBF;
+  /*border: 4px solid blue; */
+  margin-bottom: 50px;
+  background-image: url('/static/img/notecard.png');
+  background-size: 100%;
+  z-index: 100;
+  font-size: 0.7em;
+  width: 100%;
+  min-height: 300px;
+  background-color: #fdf3e7;
+  font-size: 1em;
+  cursor:pointer;
+  -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  -webkit-transition: all 0.1s ease-in;
+}
+.recipe-note-card:hover,
+.recipe-note-card:focus,
+.recipe-note-card:active {
+  z-index: 999;
+  border-color: #6A6A6A;
+  -webkit-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
+}
+
+.recipe-card-header {
+  font-family: "NotethisRegular", "Snell Roundhand", "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+.recipe-card-header .title {
+  font-size: 26px;
+  font-weight: bold;
+  transform: rotate(-5deg);
+}
+.recipe-card-header .foodpic {
+  float: right;
+  width: 33%;
+  height: auto;
+}
+
+
+.recipe-card-body {
+  width: 95%;
+  color: #333;
+  font-size: 17px;
+}
+
+.recipe-card-body img{
+  width: 33%;
+  height: auto;
+  border: 1px solid black;
+}
+
+
+
+
+
+
+
+
+.large-recipe-card-matte {
+  /*background-image: url("/static/img/placemat.jpg");*/
+
+  background: #000000;
+  border: 5px solid green;
+  width: 80%;
+  margin: 0 auto;
+  transform: rotate(-2deg);
+  padding: 30px;
+}
+.large-recipe-card {
+  background-color: #fdf3e7;
+  border: 5px solid blue;
+  margin: 30px;
+  padding: 20px;
+  transform: rotate(2deg);
+}
+.large-recipe-card .title {
+  font-family: "NotethisRegular", "Snell Roundhand", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 40px;
+}
+.lg-food-pic {
+  height: auto;
+  width: 30%;
+  float: right;
+}
+.big-rating {
+  width: 30%;
+  height: auto;
+}
