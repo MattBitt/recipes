@@ -6192,7 +6192,7 @@ body {
   min-height: 300px;
   background-color: #fdf3e7;
   font-size: 1em;
-  cursor:pointer;
+  cursor: pointer;
   -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -6207,7 +6207,6 @@ body {
   -moz-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
   box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
 }
-
 .recipe-card-header {
   font-family: "NotethisRegular", "Snell Roundhand", "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
@@ -6221,30 +6220,18 @@ body {
   width: 33%;
   height: auto;
 }
-
-
 .recipe-card-body {
   width: 95%;
   color: #333;
   font-size: 17px;
 }
-
-.recipe-card-body img{
+.recipe-card-body img {
   width: 33%;
   height: auto;
   border: 1px solid black;
 }
-
-
-
-
-
-
-
-
 .large-recipe-card-matte {
   /*background-image: url("/static/img/placemat.jpg");*/
-
   background: #000000;
   border: 5px solid green;
   width: 80%;
