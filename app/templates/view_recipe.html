@@ -7,6 +7,24 @@
 <div class="large-recipe-card-matte">
     <div class="large-recipe-card">
         <div class = "title">{{ recipe['recipe_name'] }}</div>
+           <div class="btn-group">
+                <a href="{{url_for('edit_recipe',id=recipe['id'])}}">
+                    <button class="btn btn-primary">
+                        <span class="glyphicon glyphicon-edit"></span> Edit 
+                    </button>
+                </a>
+                <a href="{{url_for('print_recipe',id=recipe['id'])}}">
+                    <button class="btn btn-primary">
+                        <span class="glyphicon glyphicon-print"></span> Print
+                    </button>
+                </a>
+                <a href="{{url_for('delete_recipe',id=recipe['id'])}}">
+                    <button class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove "></span> Delete Recipe
+                    </button>
+                    </a>
+            </div>
+        
         {% if recipe['url'] %}
             <p><a href="{{recipe['url']}}">{{recipe['url']}}</a></p>
         {% endif %}
@@ -45,10 +63,10 @@
             {% endfor %}
             </ul>
         {% endif %}
-<a href="{{url_for('edit_recipe',id=recipe['id'])}}"><span class="glyphicon glyphicon-edit"></span></span> Edit</a>
-<a href="{{url_for('print_recipe',id=recipe['id'])}}"><span class="glyphicon glyphicon-print"></span> Print</a>
-<a href="{{url_for('delete_recipe',id=recipe['id'])}}"><span class="badge alert-danger"><span class="glyphicon glyphicon-remove "></span> Delete Recipe</a></span>
-    </div>
+                    
+
+ 
+</div>
 </div>
 
 {% endblock %}
