@@ -38,12 +38,12 @@ def index(page = 1):
         r.fav = False
     my_recipes = set(recent_recipes)
     
-    while len(my_recipes) < 10:
+    while len(my_recipes) < 9:
         favorite = get_favorites()
         for fav in favorite:
             fav.fav  = True
             my_recipes.add(fav)
-            if len(my_recipes) == 10:
+            if len(my_recipes) == 9:
                 break
         
     #need to check if any random are in recent_recipes.  if they are get a new one
@@ -139,9 +139,9 @@ def add_recipe():
             return redirect(url_for('view_recipe', id=new_rec.id))
         else:
             flash('Invalid data')
-            return render_template('recipe_form.html',form = form)
+            return render_template('recipe_form.html',form = form, title="Add A New Recipe")
     elif request.method != "POST":
-        return render_template('recipe_form.html',form = form)
+        return render_template('recipe_form.html',form = form, title="Add A New Recipe")
     return redirect(url_for('add_recipe'))
 
 @app.route('/edit_recipe/<id>', methods = ['GET', 'POST'])
@@ -177,6 +177,7 @@ def edit_recipe(id=1):
             app.logger.info("Failed Validation")
             import pdb; pdb.set_trace()        
     return render_template('recipe_form.html',
+        title="Edit a Recipe",
         form = form)
 
 @app.route('/view_recipe/<id>',methods = ['GET', 'POST']) 

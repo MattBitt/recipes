@@ -15,34 +15,32 @@
 <div class="row page-heading">
       <div class="col-lg-12" style="text-align:center"><h1>{{title}}</h1></div>
 </div>
-<div >
-    <div class "row" >
-        {% for rec in rec_list %}
-            <div class="col-md-6 col-sm-12" >
-                <div href="{{url_for('view_recipe', id = rec['id']) }}" class="recipe-note-card">
-                    <div class="recipe-card-header" >  
-                        <p class="title">{{ rec["recipe_name"] }} </p>
-                        {% if rec.image_path %}
-                            <img src="/static/pictures/{{rec['image_path']}}"  class="foodpic" alt=""></img>
-                        {% endif %}
-                    </div>
-                    <div class="recipe-card-body ">
-                        <br >
-                        {% if rec.rating %}
-                            <p>Rating:  <img src="/static/img/{{rec.rating}}broccoli.png" alt={{rec.rating}}></img></p>
-                        {% endif %}
-                        {% if rec.timestamp %}
-                            <p>Date: {{rec.timestamp|  datetimefilter}}</p>
-                        {% endif %}
-                        {% if rec.notes %}
-                            <p>{{ rec.notes }}</p>
-                        {% endif %}
-                    </div>
-                </div>    
+
+<div id="masonry">
+    {% for rec in rec_list %}
+        <div href="{{url_for('view_recipe', id = rec['id']) }}" class="recipe-note-card">
+            <div class="recipe-card-header" >  
+                <p class="title">{{ rec["recipe_name"] }} </p>
+                {% if rec.image_path %}
+                    <img src="/static/pictures/{{rec['image_path']}}"  class="foodpic" alt=""></img>
+                {% endif %}
             </div>
-        {% endfor %}    
-    </div>
+            <div class="recipe-card-body ">
+                <br >
+                {% if rec.rating %}
+                    <p>Rating:  <img src="/static/img/{{rec.rating}}broccoli.png" alt={{rec.rating}}></img></p>
+                {% endif %}
+                {% if rec.timestamp %}
+                    <p>Date: {{rec.timestamp|  datetimefilter}}</p>
+                {% endif %}
+                {% if rec.notes %}
+                    <p>{{ rec.notes }}</p>
+                {% endif %}
+            </div>
+        </div>    
+    {% endfor %}    
 </div>
+
 {% if not single_page %}
 {% include 'pager.html' %}
 {% endif %}
@@ -63,6 +61,16 @@ $(".recipe-note-card").click(function(){
     window.location = $(this).attr('href');
 });
 </script>
+
+<script>
+  var container = document.querySelector('#masonry');
+  var masonry = new Masonry(container, {
+    columnWidth: 50,
+    itemSelector: '.recipe-note-card',
+    isFitWidth: true,
+  });
+</script>
+
 
 
 {% endblock %}
