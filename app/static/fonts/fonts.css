@@ -9,15 +9,6 @@
     font-style: normal;
 }
 
-@font-face {
-    font-family: 'MomsDinerMedium';
-    src: url('/static/fonts/momsdiner.eot');
-    src: url('/static/fonts/momsdiner.eot') format('embedded-opentype'),
-         url('/static/fonts/momsdiner.woff2') format('woff2'),
-         url('/static/fonts/momsdiner.woff') format('woff'),
-         url('/static/fonts/momsdiner.ttf') format('truetype'),
-         url('/static/fonts/momsdiner.svg#MomsDinerMedium') format('svg');
-    } 
 
 @font-face {
 	font-family: 'NotethisRegular';

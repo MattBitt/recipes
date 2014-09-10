@@ -17,11 +17,8 @@
   width: 100%;
   min-height: 300px;
   background-color: #fdf3e7;
-  font-size: 1em;
   cursor:pointer;
-  -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  .box-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
   -webkit-transition: all 0.1s ease-in;
 }
 .recipe-note-card:hover,
@@ -29,9 +26,7 @@
 .recipe-note-card:active {
   z-index: 999;
   border-color: #6A6A6A;
-  -webkit-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
-  box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
+  .box-shadow(15px 15px 20px rgba(0, 0, 0, 0.4));
 }
 
 .recipe-card-header {
@@ -40,14 +35,13 @@
 .recipe-card-header .title {
   font-size: 26px;
   font-weight: bold;
-  transform: rotate(-5deg);
+  .rotate(-5deg);
 }
 .recipe-card-header .foodpic {
   float: right;
   width: 33%;
   height: auto;
 }
-
 
 .recipe-card-body {
   width: 95%;
