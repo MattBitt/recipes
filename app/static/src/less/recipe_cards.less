@@ -35,7 +35,7 @@
 }
 
 .recipe-card-header {
-  font-family: "NotethisRegular", "Snell Roundhand", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-family: @cards_title_font;
 }
 .recipe-card-header .title {
   font-size: 26px;
@@ -62,12 +62,6 @@
 }
 
 
-
-
-
-
-
-
 .large-recipe-card-matte {
   /*background-image: url("/static/img/placemat.jpg");*/
 
@@ -75,7 +69,7 @@
   border: 5px solid green;
   width: 80%;
   margin: 0 auto;
-  transform: rotate(-2deg);
+  transform: rotate(-@lg_card_rotation);
   padding: 30px;
 }
 .large-recipe-card {
@@ -83,10 +77,10 @@
   border: 5px solid blue;
   margin: 30px;
   padding: 20px;
-  transform: rotate(2deg);
+  transform: rotate(@lg_card_rotation);
 }
 .large-recipe-card .title {
-  font-family: "NotethisRegular", "Snell Roundhand", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-family: @cards_title_font;
   font-size: 40px;
 }
 .lg-food-pic {
