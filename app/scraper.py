@@ -1,5 +1,5 @@
 import urllib2
-#import requests
+import requests
 from BeautifulSoup import BeautifulSoup as BS
 
 
@@ -69,13 +69,20 @@ def scrape_recipe( url ):
     else:
         return None
         
+class PaginationScraper:
+    def __init__(self, url):
+        self.url = url
+        r = requests.get(url)
+        
+        #self.opener = urllib2.build_opener()
+        #self.opener.addheaders = [('User-agent', 'Google Chrome')]
+        #self.soup = BS(self.opener.open(self.url))
+        
+def scrape_page(url):
+    import pdb; pdb.set_trace()
+    ps = PaginationScraper(url)
+    
+    print ps.soup
 
-        
-        
 if __name__ == '__main__':
-        r = SkinnyTaste("http://www.skinnytaste.com/2014/08/asian-farro-medley-with-salmon.html")
-        #import pdb; pdb.set_trace()
-        print r
-        print r.get_title()
-        print r.get_ingredients()
-        print r.get_directions()
+    pass

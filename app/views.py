@@ -4,11 +4,15 @@ from forms import RecipeForm, SearchForm
 from models import Recipe
 from datetime import datetime, date
 from sqlalchemy import desc
-from scraper import scrape_recipe
+from scraper import scrape_recipe, scrape_page
 import random
 import os
 from image_functions import resize_picture
 import random
+
+import urllib2
+#import requests
+from BeautifulSoup import BeautifulSoup as BS
 
 
 @app.before_request
@@ -60,10 +64,12 @@ def index(page = 1):
 @app.route('/our_recipes/', methods = ['GET', 'POST'])
 @app.route('/our_recipes/<int:page>', methods = ['GET', 'POST'])
 def our_recipes( page=1 ):
+    url_base = 'our_recipes'
     recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=1').order_by(Recipe.recipe_name)
     single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
     if not single_page:
         recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
+        abc_pages = build_alphabetical_index(recipes, url_base)
     else:
         recipes = recipes.all()
 
@@ -71,7 +77,8 @@ def our_recipes( page=1 ):
         title = 'Our Cookbook',
         recipes = recipes,
         single_page = single_page,
-        url_base = 'our_recipes'
+        url_base = url_base,
+        abc_pages = abc_pages
         )
     
     
@@ -325,3 +332,18 @@ def search_recipes( search_term ):
         recipe_ids.append(r.id)
     #import pdb; pdb.set_trace()
     return recipe_ids
+    
+def build_alphabetical_index(recipes, url_base):
+    
+    abc_pages = []
+    for p in range(1, recipes.pages + 1):
+        page_url = url_for(url_base, page=p, _external=True)
+        print page_url
+        letter = scrape_page( page_url)
+        print letter
+        
+        abc_pages.append((letter , p))
+    
+        
+    from IPython import embed; embed()       
+    return abc_pages
