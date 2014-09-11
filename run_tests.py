@@ -21,9 +21,9 @@ from scraper_tests import ScraperTests
 
 
 # For the Code Coverage Report
-# from coverage import coverage
-# cov = coverage(branch = True, omit = ['src/*', 'run_tests.py', 'mytests/*', 'db_*'])
-# cov.start()
+from coverage import coverage
+cov = coverage(branch = True, omit = ['src/*', 'run_tests.py', 'mytests/*', 'db_*'])
+cov.start()
  
  
 def suite(add_slow = False):
@@ -51,9 +51,8 @@ if __name__ == '__main__':
     except:
         pass
     
-#cov.stop()
+    cov.stop()
  
-   # print "\n\nCoverage Report:\n"
-    #cov.report()
-    
-    #cov.erase()
+    print "\n\nCoverage Report:\n"
+    cov.report()
+    cov.erase()

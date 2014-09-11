@@ -16,7 +16,8 @@ def create_recipe():
                 url = "www.google.com",
                 rating = 4,
                 timestamp = date.today(),
-                was_cooked = 1)
+                was_cooked = 1,
+                user_id = 1)
 
 def save_recipe( recipe ):
         db.session.add( recipe )
