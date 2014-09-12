@@ -6257,7 +6257,7 @@ body {
   padding: 20px;
   border: 1px solid #BFBFBF;
   /*border: 4px solid blue; */
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   background-image: url('/static/img/notecard.png');
   background-size: 100%;
   z-index: 100;
@@ -6313,6 +6313,7 @@ body {
   border: 5px solid green;
   width: 80%;
   margin: 0 auto;
+  margin-top: 100px;
   transform: rotate(-2deg);
   padding: 30px;
 }
