@@ -9,7 +9,7 @@ import random
 import os
 from image_functions import resize_picture
 import random
-
+import string
 
 @app.before_request
 def before_request():
@@ -55,25 +55,73 @@ def index(page = 1):
         recipes = my_recipes, 
         single_page = True,
          url_base = 'index'
+        
         )
 
 @app.route('/our_recipes/', methods = ['GET', 'POST'])
-@app.route('/our_recipes/<int:page>', methods = ['GET', 'POST'])
-def our_recipes( page=1 ):
-    recipes = Recipe.query.filter(Recipe.user_id.in_((1,3))).filter('was_cooked=1').order_by(Recipe.recipe_name)
+@app.route('/our_recipes/<page>', methods = ['GET', 'POST'])
+def our_recipes( page='1' ):
+    try:
+        page = int(page)
+        recipes = Recipe.query.\
+            filter(Recipe.user_id.in_((1,3))).\
+            filter('was_cooked=1').\
+            order_by(Recipe.recipe_name)
+    except ValueError:
+        letter = page + '%'
+        recipes = Recipe.query.\
+            filter(Recipe.user_id.in_((1,3))). \
+            filter('was_cooked=1').\
+            filter(Recipe.recipe_name.like(letter)).\
+            order_by(Recipe.recipe_name)
+   
+    
     single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
     if not single_page:
         recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
     else:
         recipes = recipes.all()
-
+    letters = string.ascii_uppercase
+    
     return render_template('index.html',
         title = 'Our Cookbook',
         recipes = recipes,
         single_page = single_page,
-        url_base = 'our_recipes'
+        url_base="our_recipes",
+        search_term=None,
+        f_letter=None
+        
         )
+
+        
+@app.route('/our_recipes/byletter/<f_letter>', methods = ['GET', 'POST'])
+@app.route('/our_recipes/byletter/<f_letter>/<int:page>', methods = ['GET', 'POST'])
+def byletter( f_letter='A', page=1 ):
+    letter = f_letter + '%'
+    recipes = Recipe.query.\
+        filter(Recipe.user_id.in_((1,3))). \
+        filter('was_cooked=1').\
+        filter(Recipe.recipe_name.like(letter)).\
+        order_by(Recipe.recipe_name)
+   
     
+    single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
+    if not single_page:
+        recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
+    else:
+        recipes = recipes.all()
+    letters = string.ascii_uppercase
+    
+    return render_template('index.html',
+        title = 'Our Cookbook',
+        recipes = recipes,
+        single_page = single_page,
+        url_base = 'byletter',
+        f_letter=f_letter, 
+        search_term=None
+        )        
+        
+        
     
 @app.route('/moms_recipes/', methods = ['GET', 'POST'])
 @app.route('/moms_recipes/<int:page>', methods = ['GET', 'POST'])
@@ -88,7 +136,9 @@ def moms_recipes( page=1 ):
         title = 'Moms Recipes',
         recipes = recipes,
         single_page = single_page,
-        url_base = 'moms_recipes'
+        url_base = 'moms_recipes',
+        f_letter=None,
+        search_term=None
         )   
 
 @app.route('/meal_ideas/', methods = ['GET', 'POST'])
@@ -104,7 +154,9 @@ def meal_ideas( page=1 ):
         title = 'Meal Ideas',
         recipes = recipes,
         single_page = single_page,
-        url_base = 'meal_ideas'
+        url_base = 'meal_ideas',
+        f_letter=None,
+        search_term=None
         )  
         
         
