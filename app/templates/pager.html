@@ -7,9 +7,11 @@
         <li class="previous disabled"><a href="#">Previous page</a></li>
     {% endif %}
 
-    {% for p in range(1, recipes.pages + 1) %}
+    {% for p in page_list %}
         {% if p == recipes.page %}
             <li class="active"><span>{{p}}<span class="sr-only">(current)</span></span></li>
+        {% elif p == "..." %}
+        <li><span>...<span class="sr-only">(current)</span></span></li>
         {% else %}
             <li><a href="{{ url_for(url_base, search_term=search_term, page=p, f_letter=f_letter) }}">{{p}}</a></li>
         {% endif %}

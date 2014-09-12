@@ -6250,11 +6250,6 @@ body {
 .page-heading {
   padding-bottom: 100px;
 }
-.pagination {
-  margin: 0 auto;
-  float: none;
-  border: 5px solid blue;
-}
 .recipe-note-card {
   display: block;
   text-decoration: none;

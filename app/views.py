@@ -81,16 +81,15 @@ def our_recipes( page='1' ):
         recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
     else:
         recipes = recipes.all()
-    letters = string.ascii_uppercase
-    
+    page_list = get_page_list( recipes, 11 )
     return render_template('index.html',
         title = 'Our Cookbook',
         recipes = recipes,
         single_page = single_page,
         url_base="our_recipes",
         search_term=None,
-        f_letter=None
-        
+        f_letter=None,
+        page_list = page_list
         )
 
         
@@ -111,14 +110,15 @@ def byletter( f_letter='A', page=1 ):
     else:
         recipes = recipes.all()
     letters = string.ascii_uppercase
-    
+    page_list = get_page_list( recipes, 11 )
     return render_template('index.html',
         title = 'Our Cookbook',
         recipes = recipes,
         single_page = single_page,
         url_base = 'byletter',
         f_letter=f_letter, 
-        search_term=None
+        search_term=None,
+        page_list=page_list
         )        
         
         
@@ -130,6 +130,7 @@ def moms_recipes( page=1 ):
     single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
     if not single_page:
         recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
+        page_list = get_page_list( recipes, 11 )
     else:
         recipes = recipes.all()
     return render_template('index.html',
@@ -138,7 +139,8 @@ def moms_recipes( page=1 ):
         single_page = single_page,
         url_base = 'moms_recipes',
         f_letter=None,
-        search_term=None
+        search_term=None, 
+        page_list = page_list
         )   
 
 @app.route('/meal_ideas/', methods = ['GET', 'POST'])
@@ -150,13 +152,15 @@ def meal_ideas( page=1 ):
         recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
     else:
         recipes = recipes.all()
+    page_list = get_page_list( recipes, 11)
     return render_template('index.html',
         title = 'Meal Ideas',
         recipes = recipes,
         single_page = single_page,
         url_base = 'meal_ideas',
         f_letter=None,
-        search_term=None
+        search_term=None, 
+        page_list=page_list
         )  
         
         
@@ -377,3 +381,26 @@ def search_recipes( search_term ):
         recipe_ids.append(r.id)
     #import pdb; pdb.set_trace()
     return recipe_ids
+    
+    
+def get_page_list( paginated, num_links_shown ):
+    if paginated.pages < num_links_shown:
+        page_list = range(1,paginated.pages)
+        return page_list
+    else:
+        curr_page = paginated.page
+        if curr_page < 4:
+            beg_pages = range(1,num_links_shown-1)
+            beg_pages.append('...')
+            beg_pages.append(paginated.pages)
+            return beg_pages
+        elif curr_page > paginated.pages - 3:
+            end_pages = [1, '...']
+            end_pages+=(range(paginated.pages - num_links_shown + 3, paginated.pages+1))
+            return end_pages
+        else:
+            page_list = [1, '...', curr_page - 3, curr_page -2, curr_page -1]
+            page_list.append(curr_page)
+            page_list += [curr_page + 1, curr_page + 2, curr_page + 3, '...', paginated.pages]
+            return page_list
+      
