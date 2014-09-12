@@ -1,18 +1,24 @@
-<div class="row">
-<ul class="pager">
+<div class="text-center">
+<ul class="pagination pagination-lg">
 {% if recipes.has_prev or recipes.has_next %}
     {% if recipes.has_prev %}
-        <li class="previous"><a href="{{ url_for(url_base, search_term=search_term, page=recipes.prev_num) }}">Previous page</a></li>
+        <li class="previous"><a href="{{ url_for(url_base, search_term=search_term, page=recipes.prev_num, f_letter=f_letter) }}">Previous page</a></li>
     {% else %}
         <li class="previous disabled"><a href="#">Previous page</a></li>
     {% endif %}
 
-     {% for p in range(1,recipes.pages + 1) %}
-        <li><a href="{{ url_for(url_base, search_term=search_term, page=p) }}">{{p}}</a></li>
+    {% for p in page_list %}
+        {% if p == recipes.page %}
+            <li class="active"><span>{{p}}<span class="sr-only">(current)</span></span></li>
+        {% elif p == "..." %}
+        <li><span>...<span class="sr-only">(current)</span></span></li>
+        {% else %}
+            <li><a href="{{ url_for(url_base, search_term=search_term, page=p, f_letter=f_letter) }}">{{p}}</a></li>
+        {% endif %}
     {% endfor %}
 
     {% if recipes.has_next %}
-        <li class="next"><a href="{{ url_for(url_base, search_term=search_term, page=recipes.next_num) }}">Next page</a></li>
+        <li class="next"><a href="{{ url_for(url_base, search_term=search_term, page=recipes.next_num, f_letter=f_letter) }}">Next page</a></li>
     {% else %}
         <li class="next disabled"><a href="#">Next page</a></li>
     {% endif %}
