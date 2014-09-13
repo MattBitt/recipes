@@ -2,7 +2,7 @@
 import MySQLdb
 import unittest
 from datetime import datetime, timedelta
-from app.models import User, Recipe
+from app.models import Recipe
 from config import basedir
 from app import app, db
 import os
@@ -24,6 +24,7 @@ def clean_string(s):
     s = s.replace(chr(0xae),"")
     s = s.replace(chr(0x95),":")
     s = s.replace(chr(0x99),"")
+    s = s.replace(chr(0x97),"")
     return s
 
 def import_our_recipes():
@@ -44,7 +45,10 @@ def import_our_recipes():
             rec.notes = clean_string(rec.notes)
             rec.notes = clean_string(rec.notes)
             rec.user_id = 1
-            rec.timestamp = row[1]
+            if row[1]:
+                rec.timestamp = row[1]
+            else:
+                rec.timestamp = datetime.strptime('01012013', "%d%m%Y").date()
             rec.image_path = row[9]
             rec.rating = row[8]
             rec.was_cooked = 1
@@ -67,7 +71,7 @@ def import_moms_recipes():
             rec.directions = clean_string(rec.directions)
             rec.notes =row[5].replace("|","\n")
             rec.notes = clean_string(rec.notes)
-            rec.user_id = 2
+            rec.user_id = 3
             
 
             db_session.add(rec)
