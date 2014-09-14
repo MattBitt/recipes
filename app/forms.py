@@ -14,9 +14,9 @@ images = UploadSet('images', IMAGES)
 
 class RecipeForm(Form):
     recipe_name = TextField('Recipe Name' , validators = [DataRequired( message='Recipe Name is required')])
-    directions = TextAreaField('Directions', validators = [Length(min = 0, max = 3000), DataRequired( message='Directions are required')])
-    ingredients = TextAreaField('Ingredients', validators = [Length(min = 0, max = 3000), DataRequired( message='Ingredients are required')])
-    notes = TextAreaField('Notes', validators = [Length(min = 0, max = 3000)])
+    directions = TextAreaField('Directions', validators = [DataRequired( message='Directions are required')])
+    ingredients = TextAreaField('Ingredients', validators = [DataRequired( message='Ingredients are required')])
+    notes = TextAreaField('Notes')
     url = TextField('URL', 
         validators = [URL(require_tld=False, message="Invalid URL"), Optional()])
     image_path = TextField('image_path')

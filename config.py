@@ -6,7 +6,7 @@ class Config(object):
     DEBUG = False
     TESTING = False
     
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'recipes.db')
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
     WTF_CSRF_ENABLED = True
@@ -35,3 +35,6 @@ class TestingConfig(Config):
     CSRF_ENABLED = False
     UPLOADS_DEFAULT_DEST = 'app/static/temp_uploads/'
 
+if __name__ == "__main__":
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'recipes.db')
+    SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')

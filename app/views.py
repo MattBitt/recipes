@@ -133,6 +133,7 @@ def moms_recipes( page=1 ):
         page_list = get_page_list( recipes, 11 )
     else:
         recipes = recipes.all()
+        
     return render_template('index.html',
         title = 'Moms Recipes',
         recipes = recipes,
@@ -151,9 +152,10 @@ def meal_ideas( page=1 ):
     single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
     if not single_page:
         recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
+        page_list = get_page_list( recipes, 11)
     else:
         recipes = recipes.all()
-    page_list = get_page_list( recipes, 11)
+        page_list = [1]
     return render_template('index.html',
         title = 'Meal Ideas',
         recipes = recipes,
@@ -386,7 +388,7 @@ def search_recipes( search_term ):
     
 def get_page_list( paginated, num_links_shown ):
     if paginated.pages < num_links_shown:
-        page_list = range(1,paginated.pages)
+        page_list = range(1,paginated.pages+1)
         return page_list
     else:
         curr_page = paginated.page
