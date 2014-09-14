@@ -78,7 +78,7 @@ def import_moms_recipes():
             db_session.commit()
 
 def create_session():
-    engine = sa.create_engine('sqlite:///app.db')
+    engine = sa.create_engine('sqlite:///recipes.db')
     Session = orm.sessionmaker(bind=engine)
     session = Session()
     session._model_changes = {}
