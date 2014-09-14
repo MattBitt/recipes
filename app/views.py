@@ -38,12 +38,12 @@ def index(page = 1):
         r.fav = False
     my_recipes = set(recent_recipes)
     
-    while len(my_recipes) < 9:
+    while len(my_recipes) < app.config['RECIPES_PER_PAGE']:
         favorite = get_favorites()
         for fav in favorite:
             fav.fav  = True
             my_recipes.add(fav)
-            if len(my_recipes) == 9:
+            if len(my_recipes) == app.config['RECIPES_PER_PAGE']:
                 break
         
     #need to check if any random are in recent_recipes.  if they are get a new one

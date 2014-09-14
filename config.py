@@ -13,7 +13,7 @@ class Config(object):
     CSRF_ENABLED = True
     SECRET_KEY = '%@#$%$^@ASDF'
 
-    RECIPES_PER_PAGE = 9
+    RECIPES_PER_PAGE = 10
     RECIPES_PER_HOME_PAGE = 5
 
     UPLOADS_DEFAULT_DEST = 'app/static/pictures/'

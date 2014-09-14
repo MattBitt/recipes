@@ -6243,12 +6243,11 @@ body {
 .container {
   min-height: 100%;
 }
-.navbar-brand {
-  font-size: 30px;
-  transform: rotate(-5deg);
-}
 .page-heading {
   padding-bottom: 100px;
+}
+h1 {
+  font-family: permanent_markerregular;
 }
 .recipe-note-card {
   display: block;
@@ -6261,8 +6260,8 @@ body {
   background-image: url('/static/img/notecard.png');
   background-size: 100%;
   z-index: 100;
-  font-size: 0.7em;
-  width: 350px;
+  font-size: 0.9em;
+  width: 500px;
   min-height: 300px;
   background-color: #fdf3e7;
   cursor: pointer;
@@ -6281,10 +6280,10 @@ body {
   box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.4);
 }
 .recipe-card-header {
-  font-family: "NotethisRegular", "Snell Roundhand", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-family: "grand_hotelregular", "Snell Roundhand", "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 .recipe-card-header .title {
-  font-size: 26px;
+  font-size: 35px;
   font-weight: bold;
   transform: rotate(-5deg);
   -webkit-transform: rotate(-5deg);
@@ -6325,7 +6324,7 @@ body {
   transform: rotate(2deg);
 }
 .large-recipe-card .title {
-  font-family: "NotethisRegular", "Snell Roundhand", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-family: "grand_hotelregular", "Snell Roundhand", "Helvetica Neue", Arial, Helvetica, sans-serif;
   font-size: 40px;
 }
 .lg-food-pic {
@@ -6339,4 +6338,11 @@ body {
 }
 #masonry {
   margin: 0 auto;
+}
+.navbar-brand {
+  font-family: "alluraregular", "Snell Roundhand", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 35px;
+  font-size: 30px;
+  transform: rotate(-5deg);
 }
