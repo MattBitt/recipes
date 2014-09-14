@@ -3,11 +3,13 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from config import basedir
 from werkzeug import secure_filename
+from werkzeug.contrib.fixers import ProxyFix
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
 db = SQLAlchemy(app)
 
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 from app import views, models
 

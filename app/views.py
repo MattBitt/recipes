@@ -146,6 +146,7 @@ def moms_recipes( page=1 ):
 @app.route('/meal_ideas/', methods = ['GET', 'POST'])
 @app.route('/meal_ideas/<int:page>', methods = ['GET', 'POST'])
 def meal_ideas( page=1 ):
+    app.logger.info("Starting meal ideas")
     recipes = Recipe.query.filter(Recipe.user_id.in_((1,2))).filter('was_cooked=0').order_by(Recipe.recipe_name)
     single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
     if not single_page:
@@ -231,7 +232,7 @@ def edit_recipe(id=1):
             return redirect(url_for('view_recipe', id=id))
         else:
             app.logger.info("Failed Validation")
-            import pdb; pdb.set_trace()        
+            
     return render_template('recipe_form.html',
         title="Edit a Recipe",
         form = form)
