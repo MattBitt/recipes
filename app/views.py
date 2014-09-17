@@ -10,6 +10,9 @@ import os
 from image_functions import resize_picture
 import random
 import string
+from jinja2 import Environment
+
+
 
 @app.before_request
 def before_request():
@@ -37,6 +40,8 @@ def index(page = 1):
     for r in recent_recipes:
         r.fav = False
     my_recipes = set(recent_recipes)
+    #env = Environment()
+    #env.globals['letters'] = get_first_letters()
     
     while len(my_recipes) < app.config['RECIPES_PER_PAGE']:
         favorite = get_favorites()
@@ -75,7 +80,7 @@ def our_recipes( page='1' ):
             filter(Recipe.recipe_name.like(letter)).\
             order_by(Recipe.recipe_name)
    
-    
+    g.letters = get_first_letters()
     single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
     if not single_page:
         recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
@@ -98,19 +103,21 @@ def our_recipes( page='1' ):
 def byletter( f_letter='A', page=1 ):
     letter = f_letter + '%'
     recipes = Recipe.query.\
-        filter(Recipe.user_id.in_((1,3))). \
+        filter(Recipe.user_id.in_((1,2))). \
         filter('was_cooked=1').\
         filter(Recipe.recipe_name.like(letter)).\
         order_by(Recipe.recipe_name)
-   
     
+    g.letters = get_first_letters()
     single_page = not recipes.count() > app.config['RECIPES_PER_PAGE']
+    page_list = []
     if not single_page:
         recipes = recipes.paginate(page, app.config['RECIPES_PER_PAGE'], False)
+        page_list = get_page_list( recipes, 11 )
     else:
         recipes = recipes.all()
-    letters = string.ascii_uppercase
-    page_list = get_page_list( recipes, 11 )
+    
+    
     return render_template('index.html',
         title = 'Our Cookbook',
         recipes = recipes,
@@ -407,3 +414,17 @@ def get_page_list( paginated, num_links_shown ):
             page_list += [curr_page + 1, curr_page + 2, curr_page + 3, '...', paginated.pages]
             return page_list
       
+def get_first_letters():
+    recipes = Recipe.query.\
+        filter(Recipe.user_id.in_((1,2))). \
+        filter('was_cooked=1')
+    
+    letters = []
+    for r in recipes:
+        letters.append(r.recipe_name[0].upper())
+    s = set(letters)
+    l = list(s)
+    l.sort()
+    return l
+    
+    
